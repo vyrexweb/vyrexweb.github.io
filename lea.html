@@ -1,668 +1,91 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Lea IA — by Tom</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:        #0a0b10;
-      --surface:   #111218;
-      --card:      #16181f;
-      --card2:     #1c1e28;
-      --border:    rgba(255,255,255,0.07);
-      --border2:   rgba(255,255,255,0.12);
-      --violet:    #7c6ef5;
-      --violet2:   #a89cf7;
-      --teal:      #2dd4bf;
-      --glow-v:    rgba(124,110,245,0.35);
-      --text:      #e9eaf3;
-      --text2:     #9a9db8;
-      --text3:     #4a4d65;
-      --bubble-user: linear-gradient(135deg,#5a4fcf,#7c6ef5,#9b8ef7);
-      --bubble-ai:   #16181f;
-      --radius-lg: 22px;
-      --radius-md: 14px;
-      --radius-sm: 10px;
-      --font-ui:   'Outfit', sans-serif;
-      --font-body: 'Lora', serif;
-      --safe-b:    env(safe-area-inset-bottom, 0px);
-    }
-
-    html, body { height: 100%; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font-ui);
-      overflow: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* ── Animated background ── */
-    .bg-layer { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-    .orb {
-      position: absolute; border-radius: 50%;
-      filter: blur(90px); opacity: 0.16;
-      animation: drift 20s ease-in-out infinite alternate;
-    }
-    .orb1 { width: 60vmax; height: 60vmax; background: #5a4fcf; top: -20%; left: -20%; }
-    .orb2 { width: 45vmax; height: 45vmax; background: #2dd4bf; bottom: -15%; right: -15%; animation-delay: -10s; }
-    .orb3 { width: 35vmax; height: 35vmax; background: #7c6ef5; top: 40%; left: 55%; animation-delay: -5s; }
-    @keyframes drift {
-      from { transform: translate(0,0) scale(1); }
-      to   { transform: translate(4%,6%) scale(1.1); }
-    }
-
-    /* ── Page wrapper ── */
-    .page {
-      position: relative; z-index: 1;
-      display: flex;
-      height: 100vh; height: 100dvh;
-    }
-
-    /* ── Sidebar ── */
-    .sidebar {
-      display: none;
-      flex-direction: column;
-      width: 230px; flex-shrink: 0;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      padding: 20px 14px;
-      gap: 4px;
-    }
-
-    @media (min-width: 860px) {
-      .sidebar { display: flex; }
-    }
-
-    .s-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-    .s-orb {
-      width: 38px; height: 38px; border-radius: 13px; flex-shrink: 0;
-      background: linear-gradient(135deg,#5a4fcf,#7c6ef5);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 16px; color: #fff;
-      box-shadow: 0 0 20px var(--glow-v);
-    }
-    .s-brand { font-weight: 700; font-size: 15px; line-height: 1.15; }
-    .s-brand small { display: block; font-size: 11px; color: var(--text2); font-weight: 400; }
-
-    .s-section {
-      font-size: 10px; color: var(--text3); font-weight: 600;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 12px 8px 4px;
-    }
-
-    .s-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 9px 10px; border-radius: var(--radius-sm);
-      font-size: 13px; color: var(--text2); cursor: pointer;
-      transition: all 0.18s; user-select: none;
-    }
-    .s-item:hover { background: var(--card); color: var(--text); }
-    .s-item.active { background: rgba(124,110,245,0.12); color: var(--violet2); }
-    .s-item svg { width: 15px; height: 15px; flex-shrink: 0; stroke-width: 1.8; }
-
-    .s-spacer { flex: 1; }
-
-    .s-author {
-      display: flex; align-items: center; gap: 9px;
-      padding: 10px; border-radius: var(--radius-sm);
-      background: var(--card); border: 1px solid var(--border);
-    }
-    .author-av {
-      width: 30px; height: 30px; border-radius: 50%;
-      background: linear-gradient(135deg,#2dd4bf,#5a4fcf);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 12px; color: #fff; flex-shrink: 0;
-    }
-    .author-info { font-size: 12px; line-height: 1.35; }
-    .author-info strong { display: block; font-weight: 600; }
-    .author-info span { color: var(--text2); font-size: 11px; }
-
-    /* ── Main chat column ── */
-    .main {
-      flex: 1; min-width: 0;
-      display: flex; flex-direction: column;
-    }
-
-    /* ── Header ── */
-    .hdr {
-      display: flex; align-items: center; justify-content: space-between;
-      height: 62px; padding: 0 16px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    @media (min-width: 600px) { .hdr { padding: 0 24px; } }
-
-    .hdr-left { display: flex; align-items: center; gap: 11px; }
-
-    .h-orb {
-      width: 38px; height: 38px; border-radius: 13px; flex-shrink: 0;
-      background: linear-gradient(135deg, #5a4fcf, #7c6ef5, #9b8ef7);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 16px; color: #fff;
-      box-shadow: 0 0 18px var(--glow-v);
-      position: relative; overflow: hidden;
-    }
-    .h-orb::after {
-      content:''; position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 55%);
-    }
-
-    .h-text h1 {
-      font-size: clamp(15px, 2.8vw, 18px);
-      font-weight: 700; letter-spacing: -0.3px; line-height: 1;
-    }
-    .h-text h1 em { font-style: normal; color: var(--teal); }
-    .h-text p { font-size: 11px; color: var(--text2); margin-top: 3px; }
-
-    .badge {
-      display: flex; align-items: center; gap: 6px;
-      padding: 5px 12px; border-radius: 99px;
-      background: var(--card); border: 1px solid var(--border);
-      font-size: 12px; color: var(--text2); font-weight: 500; white-space: nowrap;
-    }
-    .badge-dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: #22c55e; box-shadow: 0 0 6px #22c55e;
-      animation: blink 2.2s ease-in-out infinite;
-    }
-    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
-
-    /* ── Chat ── */
-    #chat {
-      flex: 1; overflow-y: auto;
-      padding: 20px 14px;
-      display: flex; flex-direction: column; gap: 16px;
-      overscroll-behavior: contain;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255,255,255,0.07) transparent;
-    }
-    #chat::-webkit-scrollbar { width: 3px; }
-    #chat::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 4px; }
-
-    @media (min-width: 600px) { #chat { padding: 24px 28px; } }
-    @media (min-width: 860px) { #chat { padding: 28px 36px; } }
-
-    /* ── Welcome ── */
-    .welcome {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center; gap: 12px; padding: 24px 16px;
-      animation: fadeUp 0.5s ease both;
-    }
-    .welcome-icon {
-      width: clamp(64px,12vw,88px); height: clamp(64px,12vw,88px);
-      border-radius: clamp(20px,4vw,28px);
-      background: linear-gradient(135deg, #5a4fcf, #7c6ef5, #2dd4bf);
-      display: flex; align-items: center; justify-content: center;
-      font-size: clamp(26px,5vw,36px); color: #fff; font-weight: 800;
-      box-shadow: 0 0 55px var(--glow-v), 0 0 0 1px rgba(124,110,245,0.2);
-      margin-bottom: 6px;
-    }
-    .welcome h2 {
-      font-size: clamp(20px,5vw,30px);
-      font-weight: 800; letter-spacing: -0.5px; line-height: 1.1;
-    }
-    .welcome h2 em { font-style: normal; color: var(--violet2); }
-    .welcome p { font-size: clamp(13px,2vw,15px); color: var(--text2); line-height: 1.65; max-width: 360px; }
-
-    .chips {
-      display: flex; flex-wrap: wrap;
-      gap: 8px; justify-content: center; margin-top: 6px;
-    }
-    .chip {
-      padding: 7px 15px; border-radius: 99px;
-      border: 1px solid var(--border2);
-      background: var(--card); font-size: 12.5px;
-      color: var(--text2); cursor: pointer;
-      transition: all 0.18s; font-family: var(--font-ui);
-      -webkit-tap-highlight-color: transparent;
-    }
-    .chip:hover { border-color: var(--violet); color: var(--violet2); background: rgba(124,110,245,0.08); }
-    .chip:active { transform: scale(0.96); }
-
-    /* ── Messages ── */
-    .msg-row {
-      display: flex; flex-direction: column; gap: 4px;
-      animation: fadeUp 0.26s ease both;
-    }
-    .msg-row.user { align-items: flex-end; }
-    .msg-row.ai   { align-items: flex-start; }
-    @keyframes fadeUp {
-      from { opacity:0; transform:translateY(10px); }
-      to   { opacity:1; transform:translateY(0); }
-    }
-
-    .msg-label { font-size: 11px; color: var(--text3); font-weight: 500; padding: 0 5px; }
-
-    .msg-bubble {
-      max-width: min(80%, 580px);
-      padding: 12px 16px;
-      border-radius: 20px;
-      font-size: clamp(13.5px, 2vw, 15px);
-      line-height: 1.7;
-      font-family: var(--font-body);
-      word-wrap: break-word;
-    }
-    .msg-row.user .msg-bubble {
-      background: var(--bubble-user);
-      border-bottom-right-radius: 5px;
-      color: rgba(255,255,255,0.95);
-      box-shadow: 0 5px 24px rgba(90,79,207,0.38);
-    }
-    .msg-row.ai .msg-bubble {
-      background: var(--bubble-ai);
-      border: 1px solid var(--border);
-      border-bottom-left-radius: 5px;
-      color: var(--text);
-    }
-
-    .typing-dots { display: flex; align-items: center; gap: 5px; padding: 2px 0; }
-    .typing-dots span {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--violet2); opacity: 0.45;
-      animation: bounce 1.3s ease-in-out infinite;
-    }
-    .typing-dots span:nth-child(2) { animation-delay:.16s; }
-    .typing-dots span:nth-child(3) { animation-delay:.32s; }
-    @keyframes bounce {
-      0%,80%,100% { transform:translateY(0);opacity:.4; }
-      40%          { transform:translateY(-7px);opacity:1; }
-    }
-
-    /* ── Input area ── */
-    .input-area {
-      flex-shrink: 0;
-      padding: 10px 12px;
-      padding-bottom: calc(10px + var(--safe-b));
-      border-top: 1px solid var(--border);
-    }
-
-    @media (min-width: 600px) { .input-area { padding: 12px 28px calc(12px + var(--safe-b)); } }
-    @media (min-width: 860px) { .input-area { padding: 14px 36px calc(14px + var(--safe-b)); } }
-
-    .input-box {
-      display: flex; align-items: flex-end; gap: 8px;
-      background: var(--card);
-      border: 1px solid var(--border2);
-      border-radius: var(--radius-lg);
-      padding: 10px 10px 10px 16px;
-      transition: border-color .2s, box-shadow .2s;
-    }
-    .input-box:focus-within {
-      border-color: rgba(124,110,245,0.4);
-      box-shadow: 0 0 0 3px rgba(124,110,245,0.07);
-    }
-
-    #prompt {
-      flex: 1; background: none; border: none; outline: none;
-      color: var(--text); font-family: var(--font-ui);
-      font-size: clamp(14px,2vw,15px); font-weight: 400;
-      resize: none; min-height: 26px; max-height: 140px;
-      line-height: 1.55; padding: 2px 0;
-      scrollbar-width: none;
-    }
-    #prompt::-webkit-scrollbar { display: none; }
-    #prompt::placeholder { color: var(--text3); }
-
-    .actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
-
-    .btn-icon {
-      width: 40px; height: 40px; border-radius: 13px;
-      border: 1px solid var(--border2);
-      background: var(--card2);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; color: var(--text2);
-      transition: all .18s; flex-shrink: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .btn-icon:hover { background: var(--card); color: var(--text); }
-    .btn-icon:active { transform: scale(0.93); }
-    .btn-icon svg { width: 17px; height: 17px; stroke-width: 1.8; }
-
-    .btn-icon.listening {
-      background: rgba(239,68,68,.12);
-      border-color: #ef4444; color: #ef4444;
-      animation: micGlow 1s ease-in-out infinite;
-    }
-    @keyframes micGlow {
-      0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,.3); }
-      50%      { box-shadow: 0 0 0 7px rgba(239,68,68,.05); }
-    }
-
-    .btn-send {
-      width: 40px; height: 40px; border-radius: 13px;
-      background: linear-gradient(135deg,#5a4fcf,#7c6ef5);
-      border: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      color: #fff; flex-shrink: 0;
-      box-shadow: 0 4px 18px rgba(90,79,207,.4);
-      transition: all .18s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .btn-send:hover { transform: scale(1.07); box-shadow: 0 6px 24px rgba(90,79,207,.6); }
-    .btn-send:active { transform: scale(0.94); }
-    .btn-send svg { width: 16px; height: 16px; }
-
-    .hint {
-      text-align: center; font-size: 11px; color: var(--text3); margin-top: 7px;
-      display: none;
-    }
-    @media (min-width: 600px) { .hint { display: block; } }
-    .hint span { color: var(--text2); }
-
-    /* ── Mic pill ── */
-    .mic-pill {
-      position: fixed;
-      bottom: 100px; left: 50%; transform: translateX(-50%);
-      background: var(--card); border: 1px solid #ef4444;
-      color: #ef4444; font-size: 13px; font-weight: 500;
-      padding: 8px 18px; border-radius: 99px;
-      display: none; align-items: center; gap: 8px;
-      z-index: 100;
-      box-shadow: 0 4px 24px rgba(239,68,68,.2);
-      animation: fadeUp .2s ease;
-      white-space: nowrap;
-    }
-    .mic-pill.show { display: flex; }
-    .mic-ring {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: #ef4444;
-      animation: ringPulse 1s ease infinite;
-    }
-    @keyframes ringPulse {
-      0%   { transform:scale(1); opacity:1; }
-      100% { transform:scale(2.2); opacity:0; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Mon IA Groq</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 700px; margin: 30px auto; background-color: #f0f2f5; }
+        #chat { border: 1px solid #ddd; height: 450px; padding: 20px; overflow-y: auto; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .message { margin-bottom: 15px; padding: 10px 15px; border-radius: 10px; max-width: 80%; }
+        .toi { background-color: #007bff; color: white; align-self: flex-end; margin-left: auto; }
+        .ia { background-color: #e9ecef; color: #333; }
+        .container-input { display: flex; gap: 10px; }
+        input { flex-grow: 1; padding: 12px; border-radius: 8px; border: 1px solid #ccc; outline: none; }
+        button { padding: 10px 20px; background: #f55036; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #d4442e; }
+    </style>
 </head>
 <body>
 
-<div class="bg-layer">
-  <div class="orb orb1"></div>
-  <div class="orb orb2"></div>
-  <div class="orb orb3"></div>
-</div>
-
-<!-- Mic pill -->
-<div class="mic-pill" id="micPill">
-  <div class="mic-ring"></div>
-  Je t'écoute…
-</div>
-
-<div class="page">
-
-  <!-- Sidebar (desktop) -->
-  <aside class="sidebar">
-    <div class="s-logo">
-      <div class="s-orb">L</div>
-      <div class="s-brand">Lea IA <small>by Tom</small></div>
+    <h2 style="text-align: center; color: #333;">⚡ IA Propulsée par Groq</h2>
+    <div id="chat" style="display: flex; flex-direction: column;"></div>
+    
+    <div class="container-input">
+        <input type="text" id="question" placeholder="Pose ta question ici..." onkeypress="testerEntree(event)">
+        <button onclick="envoyerVersGroq()">Envoyer</button>
     </div>
 
-    <div class="s-section">Menu</div>
+    <script>
+        // 👇 TA CLÉ API GROQ ICI 👇
+        const MA_CLE_GROQ = "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";
 
-    <div class="s-item active">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-      </svg>
-      Nouvelle conversation
-    </div>
+        async function envoyerVersGroq() {
+            const input = document.getElementById("question");
+            const message = input.value.trim();
+            if (!message) return;
 
-    <div class="s-item" onclick="clearChat()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="3 6 5 6 21 6"/>
-        <path d="M19 6l-1 14H6L5 6"/>
-        <path d="M10 11v6M14 11v6M9 6V4h6v2"/>
-      </svg>
-      Effacer le chat
-    </div>
+            afficherMessage(message, "toi");
+            input.value = "";
 
-    <div class="s-section">Infos</div>
+            const idAttente = afficherMessage("🤖 Réflexion en cours...", "ia");
 
-    <div class="s-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <line x1="12" y1="8" x2="12" y2="12"/>
-        <line x1="12" y1="16" x2="12.01" y2="16"/>
-      </svg>
-      Llama 3.3 · Groq API
-    </div>
+            try {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${MA_CLE_GROQ}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        // On utilise un modèle rapide de chez Groq
+                        model: "llama3-8b-8192", 
+                        messages: [{ role: "user", content: message }]
+                    })
+                });
 
-    <div class="s-spacer"></div>
+                const data = await response.json();
+                document.getElementById(idAttente).remove();
 
-    <div class="s-author">
-      <div class="author-av">T</div>
-      <div class="author-info">
-        <strong>Tom</strong>
-        <span>Créateur de Lea IA</span>
-      </div>
-    </div>
-  </aside>
+                if (data.choices && data.choices[0]) {
+                    const texteIA = data.choices[0].message.content;
+                    afficherMessage(texteIA, "ia");
+                } else {
+                    afficherMessage("❌ Erreur : " + (data.error ? data.error.message : "Réponse inconnue"), "ia");
+                }
 
-  <!-- Main -->
-  <div class="main">
+            } catch (error) {
+                console.error(error);
+                document.getElementById(idAttente).remove();
+                afficherMessage("❌ Erreur de connexion au serveur Groq.", "ia");
+            }
+        }
 
-    <!-- Header -->
-    <header class="hdr">
-      <div class="hdr-left">
-        <div class="h-orb">L</div>
-        <div class="h-text">
-          <h1>Lea <em>IA</em></h1>
-          <p>Créée par Tom &nbsp;·&nbsp; Groq</p>
-        </div>
-      </div>
-      <div class="badge">
-        <div class="badge-dot"></div>
-        En ligne
-      </div>
-    </header>
+        function afficherMessage(texte, type) {
+            const chat = document.getElementById("chat");
+            const div = document.createElement("div");
+            const id = "msg-" + Math.random().toString(36).substr(2, 9);
+            div.id = id;
+            div.className = "message " + type;
+            div.innerText = texte;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+            return id;
+        }
 
-    <!-- Chat feed -->
-    <div id="chat">
-      <div class="welcome" id="welcome">
-        <div class="welcome-icon">✦</div>
-        <h2>Salut, je suis <em>Lea IA</em></h2>
-        <p>Ton assistante intelligente créée par Tom. Pose-moi n'importe quelle question — je suis là !</p>
-        <div class="chips">
-          <div class="chip" onclick="useChip(this)">💡 Donne-moi une idée</div>
-          <div class="chip" onclick="useChip(this)">✍️ Aide-moi à écrire</div>
-          <div class="chip" onclick="useChip(this)">📖 Explique un concept</div>
-          <div class="chip" onclick="useChip(this)">🌍 Traduis un texte</div>
-          <div class="chip" onclick="useChip(this)">🧮 Résous un calcul</div>
-          <div class="chip" onclick="useChip(this)">🎭 Raconte une histoire</div>
-        </div>
-      </div>
-    </div>
+        function testerEntree(e) {
+            if (e.key === "Enter") envoyerVersGroq();
+        }
+    </script>
 
-    <!-- Input -->
-    <div class="input-area">
-      <div class="input-box">
-        <textarea id="prompt" rows="1"
-          placeholder="Envoie un message à Lea…"
-          oninput="autoResize(this)"
-          onkeydown="onKey(event)"></textarea>
-        <div class="actions">
-          <button class="btn-icon" id="micBtn" title="Parler à Lea" onclick="toggleMic()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="2" width="6" height="11" rx="3"/>
-              <path d="M5 10a7 7 0 0 0 14 0"/>
-              <line x1="12" y1="19" x2="12" y2="22"/>
-              <line x1="8" y1="22" x2="16" y2="22"/>
-            </svg>
-          </button>
-          <button class="btn-send" onclick="send()" title="Envoyer">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="22" y1="2" x2="11" y2="13"/>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-      <p class="hint">Appuie sur <span>Entrée</span> pour envoyer · <span>Shift+Entrée</span> pour aller à la ligne</p>
-    </div>
-
-  </div><!-- /.main -->
-</div><!-- /.page -->
-
-<script>
-  const API_KEY = "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";
-  const SYSTEM  = "Tu es Lea, une IA créée par Tom. Tu es intelligente, chaleureuse, curieuse et tu réponds toujours en français avec clarté, précision et une touche de personnalité. Sois utile, concise quand c'est possible, et développe quand c'est nécessaire.";
-  const MODEL   = "llama-3.3-70b-versatile";
-
-  const history = [];
-  let listening = false, recog = null;
-
-  /* Textarea auto-resize */
-  function autoResize(el) {
-    el.style.height = "auto";
-    el.style.height = Math.min(el.scrollHeight, 140) + "px";
-  }
-
-  function onKey(e) {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
-  }
-
-  /* Chip shortcut */
-  function useChip(el) {
-    const txt = el.textContent.replace(/^.{1,3}\s/, "").trim();
-    const ta  = document.getElementById("prompt");
-    ta.value  = txt;
-    autoResize(ta);
-    send();
-  }
-
-  /* Append message bubble */
-  function addMsg(text, role, loading = false) {
-    const w = document.getElementById("welcome");
-    if (w) w.remove();
-
-    const chat = document.getElementById("chat");
-    const row  = document.createElement("div");
-    row.className = "msg-row " + role;
-
-    const label = document.createElement("div");
-    label.className = "msg-label";
-    label.textContent = role === "user" ? "Vous" : "Lea IA";
-
-    const bubble = document.createElement("div");
-    bubble.className = "msg-bubble";
-    const id = "b" + Date.now().toString(36) + Math.random().toString(36).slice(2);
-    bubble.id = id;
-
-    bubble.innerHTML = loading
-      ? '<div class="typing-dots"><span></span><span></span><span></span></div>'
-      : text.replace(/\n/g, "<br>");
-
-    row.append(label, bubble);
-    chat.appendChild(row);
-    chat.scrollTop = chat.scrollHeight;
-    return id;
-  }
-
-  /* Send */
-  async function send() {
-    const ta  = document.getElementById("prompt");
-    const txt = ta.value.trim();
-    if (!txt) return;
-
-    addMsg(txt, "user");
-    history.push({ role: "user", content: txt });
-    ta.value = ""; ta.style.height = "auto";
-
-    const lid = addMsg("", "ai", true);
-
-    try {
-      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-        method: "POST",
-        headers: { "Authorization": `Bearer ${API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: MODEL,
-          messages: [{ role: "system", content: SYSTEM }, ...history]
-        })
-      });
-      const data  = await res.json();
-      const reply = data.choices[0].message.content;
-      history.push({ role: "assistant", content: reply });
-      document.getElementById(lid).innerHTML = reply.replace(/\n/g, "<br>");
-      document.getElementById("chat").scrollTop = 9e9;
-    } catch (err) {
-      document.getElementById(lid).innerHTML = "⚠️ Erreur de connexion — réessaie dans un instant.";
-      console.error(err);
-    }
-  }
-
-  /* Clear */
-  function clearChat() {
-    history.length = 0;
-    document.getElementById("chat").innerHTML = `
-      <div class="welcome" id="welcome">
-        <div class="welcome-icon">✦</div>
-        <h2>Salut, je suis <em>Lea IA</em></h2>
-        <p>Ton assistante intelligente créée par Tom. Pose-moi n'importe quelle question — je suis là !</p>
-        <div class="chips">
-          <div class="chip" onclick="useChip(this)">💡 Donne-moi une idée</div>
-          <div class="chip" onclick="useChip(this)">✍️ Aide-moi à écrire</div>
-          <div class="chip" onclick="useChip(this)">📖 Explique un concept</div>
-          <div class="chip" onclick="useChip(this)">🌍 Traduis un texte</div>
-          <div class="chip" onclick="useChip(this)">🧮 Résous un calcul</div>
-          <div class="chip" onclick="useChip(this)">🎭 Raconte une histoire</div>
-        </div>
-      </div>`;
-  }
-
-  /* Microphone */
-  function toggleMic() {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { alert("Ton navigateur ne supporte pas la voix. Utilise Chrome ou Safari."); return; }
-
-    const btn  = document.getElementById("micBtn");
-    const pill = document.getElementById("micPill");
-
-    if (listening) { recog.stop(); return; }
-
-    recog = new SR();
-    recog.lang = "fr-FR";
-    recog.interimResults = true;
-    recog.continuous     = false;
-
-    recog.onstart = () => {
-      listening = true;
-      btn.classList.add("listening");
-      pill.classList.add("show");
-    };
-
-    recog.onresult = (e) => {
-      const t  = Array.from(e.results).map(r => r[0].transcript).join("");
-      const ta = document.getElementById("prompt");
-      ta.value = t; autoResize(ta);
-    };
-
-    recog.onend = () => {
-      listening = false;
-      btn.classList.remove("listening");
-      pill.classList.remove("show");
-      const val = document.getElementById("prompt").value.trim();
-      if (val) send();
-    };
-
-    recog.onerror = (e) => {
-      listening = false;
-      btn.classList.remove("listening");
-      pill.classList.remove("show");
-    };
-
-    recog.start();
-  }
-
-  /* Fix mobile viewport height */
-  const setVH = () => document.documentElement.style.setProperty("--dvh", window.innerHeight * .01 + "px");
-  setVH(); window.addEventListener("resize", setVH);
-</script>
 </body>
 </html>
