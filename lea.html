@@ -7,51 +7,88 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
-    body{
-      -webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;
-    }
+    body{-webkit-user-select:none;-moz-user-select:none;user-select:none;}
     pre,code,textarea,input{user-select:text;-webkit-user-select:text}
 
     :root{
-      --bg:#080910;--surface:#0f1016;--card:#14161e;--card2:#1a1c26;
+      --bg:#07080d;--surface:#0e0f16;--card:#13151d;--card2:#191b24;
       --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
-      --v1:#8b5cf6;--v2:#a78bfa;--v3:#c4b5fd;
-      --rose:#e879a0;--rose2:#f4a8c7;
-      --teal:#00d4b4;--teal2:#00bfa0;
-      --red:#ff4d6a;--green:#22c55e;
-      --text:#eaebf5;--t2:#8a8da8;--t3:#3d3f55;
+      --v1:#9b6dff;--v2:#b892ff;--v3:#d4b8ff;
+      --rose:#ff6eb4;--rose2:#ffb3d9;--rose3:rgba(255,110,180,0.15);
+      --teal:#00d4b4;--red:#ff4d6a;--green:#22c55e;
+      --text:#eaebf5;--t2:#8a8da8;--t3:#3a3d56;
       --mono:'JetBrains Mono',monospace;
       --ui:'Outfit',sans-serif;
       --safe-b:env(safe-area-inset-bottom,0px);
-      --r:20px;
     }
 
     html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--ui);overflow:hidden;-webkit-font-smoothing:antialiased}
 
-    /* Orbs */
+    /* orbs */
     .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-    .orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:.15;animation:drift 22s ease-in-out infinite alternate}
-    .o1{width:65vmax;height:65vmax;background:#6c3fa0;top:-20%;left:-20%}
-    .o2{width:45vmax;height:45vmax;background:#e879a0;bottom:-20%;right:-15%;animation-delay:-11s;opacity:.10}
-    .o3{width:35vmax;height:35vmax;background:#00c4a7;top:35%;left:52%;animation-delay:-6s;opacity:.11}
-    @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(3%,5%) scale(1.1)}}
+    .orb{position:absolute;border-radius:50%;filter:blur(110px);animation:drift 24s ease-in-out infinite alternate}
+    .o1{width:60vmax;height:60vmax;background:#6a2fa0;opacity:.13;top:-18%;left:-18%}
+    .o2{width:45vmax;height:45vmax;background:#ff5fa0;opacity:.09;bottom:-18%;right:-14%;animation-delay:-12s}
+    .o3{width:32vmax;height:32vmax;background:#00c49a;opacity:.10;top:38%;left:55%;animation-delay:-7s}
+    @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(3%,5%) scale(1.12)}}
 
     /* Layout */
     .page{position:relative;z-index:1;display:flex;height:100vh;height:100dvh}
 
+    /* ── NAME GATE ── */
+    .gate{
+      position:fixed;inset:0;z-index:100;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(7,8,13,0.97);
+      backdrop-filter:blur(12px);
+      padding:20px;
+    }
+    .gate.hidden{display:none}
+    .gate-card{
+      background:var(--surface);border:1px solid var(--border2);
+      border-radius:24px;padding:36px 32px;
+      max-width:400px;width:100%;
+      display:flex;flex-direction:column;align-items:center;gap:18px;
+      text-align:center;
+      animation:popIn .4s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes popIn{from{opacity:0;transform:scale(.88) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .gate-avatar{
+      width:72px;height:72px;border-radius:50%;
+      background:linear-gradient(135deg,#7c5cbf,#ff6eb4);
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 0 40px rgba(255,110,180,0.3);
+    }
+    .gate-avatar svg{width:36px;height:36px;stroke:#fff;stroke-width:1.6;fill:none}
+    .gate-card h2{font-size:22px;font-weight:800;letter-spacing:-.4px}
+    .gate-card h2 em{font-style:normal;color:var(--rose)}
+    .gate-card p{font-size:14px;color:var(--t2);line-height:1.6;max-width:290px}
+    .gate-input{
+      width:100%;padding:13px 18px;border-radius:14px;
+      background:var(--card);border:1px solid var(--border2);
+      color:var(--text);font-family:var(--ui);font-size:15px;outline:none;
+      transition:border-color .2s,box-shadow .2s;
+    }
+    .gate-input:focus{border-color:rgba(255,110,180,.45);box-shadow:0 0 0 3px rgba(255,110,180,.08)}
+    .gate-input::placeholder{color:var(--t3)}
+    .gate-btn{
+      width:100%;padding:13px;border-radius:14px;border:none;cursor:pointer;
+      background:linear-gradient(135deg,#7c5cbf,#ff6eb4);
+      color:#fff;font-family:var(--ui);font-size:15px;font-weight:600;
+      box-shadow:0 4px 20px rgba(255,110,180,.28);transition:all .18s;
+    }
+    .gate-btn:hover{transform:scale(1.02);box-shadow:0 6px 26px rgba(255,110,180,.42)}
+    .gate-btn:active{transform:scale(.98)}
+    .gate-err{font-size:12.5px;color:var(--red);display:none}
+    .gate-err.show{display:block}
+
     /* Sidebar */
-    .sidebar{width:230px;flex-shrink:0;display:none;flex-direction:column;background:var(--surface);border-right:1px solid var(--border);padding:18px 12px;gap:3px}
+    .sidebar{width:232px;flex-shrink:0;display:none;flex-direction:column;background:var(--surface);border-right:1px solid var(--border);padding:18px 12px;gap:3px}
     @media(min-width:820px){.sidebar{display:flex}}
 
     .s-logo{display:flex;align-items:center;gap:11px;margin-bottom:16px}
-    .s-avatar-wrap{
-      width:40px;height:40px;border-radius:50%;flex-shrink:0;
-      background:linear-gradient(135deg,#7c5cbf,#e879a0);
-      display:flex;align-items:center;justify-content:center;
-      box-shadow:0 0 20px rgba(232,121,160,0.3);
-    }
-    .s-avatar-wrap svg{width:22px;height:22px;stroke:#fff;stroke-width:1.7;fill:none}
+    .s-av{width:40px;height:40px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#7c5cbf,#ff6eb4);display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px rgba(255,110,180,.28)}
+    .s-av svg{width:22px;height:22px;stroke:#fff;stroke-width:1.7;fill:none}
     .s-brand{font-weight:700;font-size:14px;line-height:1.2}
     .s-brand small{display:block;font-size:11px;color:var(--t2);font-weight:400}
 
@@ -59,12 +96,12 @@
 
     .s-btn{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:10px;font-size:13px;color:var(--t2);cursor:pointer;transition:all .17s;border:none;background:none;width:100%;text-align:left;-webkit-tap-highlight-color:transparent}
     .s-btn:hover{background:var(--card);color:var(--text)}
-    .s-btn.active{background:rgba(139,92,246,.13);color:var(--v3)}
+    .s-btn.active{background:rgba(155,109,255,.13);color:var(--v3)}
     .s-btn svg{width:15px;height:15px;flex-shrink:0;stroke-width:1.8;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
 
     .vm-row{display:flex;align-items:center;justify-content:space-between;padding:9px 10px;border-radius:10px;background:var(--card);border:1px solid var(--border);margin-top:2px}
-    .vm-row-label{font-size:13px;color:var(--t2);display:flex;align-items:center;gap:7px}
-    .vm-row-label svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+    .vm-label{font-size:13px;color:var(--t2);display:flex;align-items:center;gap:7px}
+    .vm-label svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
     .toggle{position:relative;width:38px;height:22px;cursor:pointer;flex-shrink:0}
     .toggle input{opacity:0;width:0;height:0}
@@ -75,7 +112,7 @@
 
     .s-space{flex:1}
     .s-author{display:flex;align-items:center;gap:9px;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:10px}
-    .tom-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--teal),#7c5cbf);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff}
+    .tom-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#7c5cbf);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0}
     .av-info{font-size:12px;line-height:1.3}
     .av-info strong{display:block;font-weight:600}
     .av-info span{color:var(--t2);font-size:11px}
@@ -86,33 +123,23 @@
     /* Header */
     .hdr{display:flex;align-items:center;justify-content:space-between;height:62px;padding:0 14px;border-bottom:1px solid var(--border);flex-shrink:0}
     @media(min-width:600px){.hdr{padding:0 22px}}
-
     .hdr-l{display:flex;align-items:center;gap:11px}
-    .h-avatar{
-      width:40px;height:40px;border-radius:50%;flex-shrink:0;
-      background:linear-gradient(135deg,#7c5cbf,#e879a0);
-      display:flex;align-items:center;justify-content:center;
-      box-shadow:0 0 18px rgba(232,121,160,0.3);
-      position:relative;
-    }
-    .h-avatar svg{width:22px;height:22px;stroke:#fff;stroke-width:1.7;fill:none}
-    .h-avatar::after{content:'';position:absolute;bottom:0;right:0;width:11px;height:11px;border-radius:50%;background:var(--green);border:2px solid var(--bg);box-shadow:0 0 6px var(--green)}
+    .h-av{width:40px;height:40px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#7c5cbf,#ff6eb4);display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px rgba(255,110,180,.25);position:relative}
+    .h-av svg{width:22px;height:22px;stroke:#fff;stroke-width:1.7;fill:none}
+    .h-av::after{content:'';position:absolute;bottom:0;right:0;width:11px;height:11px;border-radius:50%;background:var(--green);border:2px solid var(--bg);box-shadow:0 0 6px var(--green)}
     .h-text h1{font-size:clamp(15px,3vw,18px);font-weight:700;letter-spacing:-.3px;line-height:1}
-    .h-text h1 em{font-style:normal;color:var(--rose2)}
+    .h-text h1 em{font-style:normal;color:var(--rose)}
     .h-text p{font-size:11px;color:var(--t2);margin-top:3px}
 
     .hdr-r{display:flex;align-items:center;gap:8px}
-
     .toggle-sm{position:relative;width:36px;height:20px;cursor:pointer;flex-shrink:0}
     .toggle-sm input{opacity:0;width:0;height:0}
     .toggle-sm .tr{position:absolute;inset:0;background:#252736;border-radius:99px;transition:background .25s;border:1px solid var(--border2)}
     .toggle-sm input:checked~.tr{background:var(--rose)}
     .toggle-sm .th{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .25s;box-shadow:0 1px 3px rgba(0,0,0,.4)}
     .toggle-sm input:checked~.th{transform:translateX(16px)}
-
     .voice-lbl{font-size:11px;color:var(--t2);white-space:nowrap;display:none}
     @media(min-width:420px){.voice-lbl{display:block}}
-
     .badge{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:99px;background:var(--card);border:1px solid var(--border);font-size:12px;color:var(--t2);font-weight:500;white-space:nowrap}
     .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 2.2s ease-in-out infinite}
     @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
@@ -121,37 +148,22 @@
     .voice-overlay{display:none;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:32px;text-align:center;flex:1;animation:fadeIn .3s ease}
     .voice-overlay.show{display:flex}
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-
-    .voice-sphere{
-      width:150px;height:150px;border-radius:50%;
-      background:linear-gradient(135deg,#7c5cbf,#e879a0,#c4b5fd);
-      display:flex;align-items:center;justify-content:center;
-      box-shadow:0 0 60px rgba(232,121,160,0.3),0 0 0 2px rgba(232,121,160,0.2);
-      position:relative;cursor:pointer;transition:transform .2s;
-    }
-    .voice-sphere svg{width:54px;height:54px;stroke:#fff;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
-    .voice-sphere:active{transform:scale(.95)}
-    .r1{position:absolute;inset:-16px;border-radius:50%;border:2px solid rgba(232,121,160,.25);animation:rp 2.2s ease-in-out infinite}
-    .r2{position:absolute;inset:-32px;border-radius:50%;border:2px solid rgba(232,121,160,.12);animation:rp 2.2s ease-in-out infinite .55s}
+    .v-sphere{width:150px;height:150px;border-radius:50%;background:linear-gradient(135deg,#7c5cbf,#ff6eb4,#d4b8ff);display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(255,110,180,.28),0 0 0 2px rgba(255,110,180,.18);position:relative;cursor:pointer;transition:transform .2s}
+    .v-sphere svg{width:54px;height:54px;stroke:#fff;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .v-sphere:active{transform:scale(.95)}
+    .r1{position:absolute;inset:-16px;border-radius:50%;border:2px solid rgba(255,110,180,.22);animation:rp 2.2s ease-in-out infinite}
+    .r2{position:absolute;inset:-32px;border-radius:50%;border:2px solid rgba(255,110,180,.10);animation:rp 2.2s ease-in-out infinite .55s}
     @keyframes rp{0%{transform:scale(.9);opacity:1}100%{transform:scale(1.12);opacity:0}}
-
-    .voice-sphere.listening{animation:vPulse 1s ease-in-out infinite alternate}
-    @keyframes vPulse{from{box-shadow:0 0 60px rgba(232,121,160,.3)}to{box-shadow:0 0 110px rgba(232,121,160,.7),0 0 0 4px rgba(232,121,160,.3)}}
-    .voice-sphere.speaking{background:linear-gradient(135deg,var(--teal2),#00e5c3);animation:sPulse .8s ease-in-out infinite alternate}
-    @keyframes sPulse{from{box-shadow:0 0 50px rgba(0,229,195,.3)}to{box-shadow:0 0 90px rgba(0,229,195,.7)}}
-
-    .voice-status{font-size:16px;font-weight:600;letter-spacing:-.2px}
-    .voice-sub{font-size:13px;color:var(--t2);line-height:1.5;max-width:280px}
-    .voice-transcript{
-      background:var(--card);border:1px solid var(--border2);border-radius:14px;
-      padding:13px 18px;font-size:14px;color:var(--t2);line-height:1.6;
-      max-width:380px;width:100%;min-height:54px;
-      display:flex;align-items:center;justify-content:center;
-      font-style:italic;transition:all .2s;
-    }
-    .voice-transcript.has-text{font-style:normal;color:var(--text)}
-    .voice-exit{margin-top:4px;padding:9px 20px;border-radius:99px;background:transparent;border:1px solid var(--border2);color:var(--t2);font-size:13px;cursor:pointer;font-family:var(--ui);transition:all .18s}
-    .voice-exit:hover{background:var(--card);color:var(--text)}
+    .v-sphere.listening{animation:vP 1s ease-in-out infinite alternate}
+    @keyframes vP{from{box-shadow:0 0 60px rgba(255,110,180,.28)}to{box-shadow:0 0 110px rgba(255,110,180,.65),0 0 0 4px rgba(255,110,180,.28)}}
+    .v-sphere.speaking{background:linear-gradient(135deg,#00bfa0,#00e5c3);animation:sP .8s ease-in-out infinite alternate}
+    @keyframes sP{from{box-shadow:0 0 50px rgba(0,229,195,.3)}to{box-shadow:0 0 90px rgba(0,229,195,.7)}}
+    .v-status{font-size:16px;font-weight:600;letter-spacing:-.2px}
+    .v-sub{font-size:13px;color:var(--t2);line-height:1.5;max-width:280px}
+    .v-transcript{background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:13px 18px;font-size:14px;color:var(--t2);line-height:1.6;max-width:380px;width:100%;min-height:54px;display:flex;align-items:center;justify-content:center;font-style:italic;transition:all .2s}
+    .v-transcript.has{font-style:normal;color:var(--text)}
+    .v-exit{margin-top:4px;padding:9px 20px;border-radius:99px;background:transparent;border:1px solid var(--border2);color:var(--t2);font-size:13px;cursor:pointer;font-family:var(--ui);transition:all .18s}
+    .v-exit:hover{background:var(--card);color:var(--text)}
 
     /* Chat */
     #chat{flex:1;overflow-y:auto;padding:18px 14px;display:flex;flex-direction:column;gap:18px;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.06) transparent}
@@ -161,21 +173,15 @@
     @media(min-width:820px){#chat{padding:26px 34px}}
 
     /* Welcome */
-    .welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;padding:20px;animation:slideUp .5s ease both}
-    .w-avatar{
-      width:clamp(70px,14vw,95px);height:clamp(70px,14vw,95px);border-radius:50%;
-      background:linear-gradient(135deg,#7c5cbf,#e879a0,#c4b5fd);
-      display:flex;align-items:center;justify-content:center;
-      box-shadow:0 0 55px rgba(232,121,160,.3),0 0 0 2px rgba(232,121,160,.15);
-      margin-bottom:6px;
-    }
-    .w-avatar svg{width:clamp(32px,7vw,44px);height:clamp(32px,7vw,44px);stroke:#fff;stroke-width:1.6;fill:none}
+    .welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:13px;padding:20px;animation:slideUp .5s ease both}
+    .w-av{width:clamp(70px,14vw,95px);height:clamp(70px,14vw,95px);border-radius:50%;background:linear-gradient(135deg,#7c5cbf,#ff6eb4,#d4b8ff);display:flex;align-items:center;justify-content:center;box-shadow:0 0 55px rgba(255,110,180,.3),0 0 0 2px rgba(255,110,180,.15);margin-bottom:4px}
+    .w-av svg{width:clamp(32px,7vw,44px);height:clamp(32px,7vw,44px);stroke:#fff;stroke-width:1.6;fill:none}
     .welcome h2{font-size:clamp(20px,5vw,30px);font-weight:800;letter-spacing:-.5px;line-height:1.1}
-    .welcome h2 em{font-style:normal;color:var(--rose2)}
+    .welcome h2 em{font-style:normal;color:var(--rose)}
     .welcome p{font-size:clamp(13px,2vw,15px);color:var(--t2);line-height:1.65;max-width:360px}
     .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:6px}
     .chip{padding:7px 14px;border-radius:99px;border:1px solid var(--border2);background:var(--card);font-size:12.5px;color:var(--t2);cursor:pointer;transition:all .17s;font-family:var(--ui);-webkit-tap-highlight-color:transparent}
-    .chip:hover{border-color:var(--rose);color:var(--rose2);background:rgba(232,121,160,.08)}
+    .chip:hover{border-color:var(--rose);color:var(--rose2);background:var(--rose3)}
     .chip:active{transform:scale(.96)}
 
     /* Messages */
@@ -185,62 +191,56 @@
     @keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
     .msg-meta{display:flex;align-items:center;gap:7px;padding:0 5px}
-    .ai-icon{
-      width:22px;height:22px;border-radius:50%;
-      background:linear-gradient(135deg,#7c5cbf,#e879a0);
-      display:flex;align-items:center;justify-content:center;
-      flex-shrink:0;
-    }
-    .ai-icon svg{width:12px;height:12px;stroke:#fff;stroke-width:2;fill:none}
+    .ai-ico{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#7c5cbf,#ff6eb4);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .ai-ico svg{width:12px;height:12px;stroke:#fff;stroke-width:2;fill:none}
     .msg-label{font-size:11px;color:var(--t3);font-weight:500}
 
     .msg-bubble{max-width:min(82%,580px);padding:12px 16px;border-radius:20px;font-size:clamp(13.5px,2vw,15px);line-height:1.72;word-wrap:break-word}
-    .msg-row.user .msg-bubble{background:linear-gradient(135deg,#5c3fa0,#8b5cf6,#a78bfa);border-bottom-right-radius:5px;color:rgba(255,255,255,.95);box-shadow:0 5px 22px rgba(92,63,160,.38)}
+    .msg-row.user .msg-bubble{background:linear-gradient(135deg,#5a3a9a,#9b6dff,#b892ff);border-bottom-right-radius:5px;color:rgba(255,255,255,.95);box-shadow:0 5px 22px rgba(90,58,154,.38)}
     .msg-row.ai .msg-bubble{background:var(--card);border:1px solid var(--border);border-bottom-left-radius:5px;color:var(--text)}
+
+    /* Generated image */
+    .gen-img-wrap{margin-top:10px;border-radius:14px;overflow:hidden;border:1px solid var(--border2);max-width:340px}
+    .gen-img-wrap img{width:100%;display:block}
+    .gen-img-caption{font-size:11px;color:var(--t2);padding:8px 12px;background:#0d0e15;display:flex;align-items:center;justify-content:space-between}
+    .gen-img-dl{display:flex;align-items:center;gap:4px;background:none;border:none;color:var(--t2);font-size:11px;cursor:pointer;font-family:var(--ui);transition:color .17s}
+    .gen-img-dl:hover{color:var(--rose2)}
+    .gen-img-dl svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none}
 
     /* Code blocks */
     .code-wrap{border-radius:12px;overflow:hidden;margin:10px 0;border:1px solid var(--border2)}
-    .code-hdr{
-      display:flex;align-items:center;justify-content:space-between;
-      background:#0d0e15;padding:8px 14px;
-      border-bottom:1px solid var(--border);
-    }
+    .code-hdr{display:flex;align-items:center;justify-content:space-between;background:#0d0e15;padding:8px 14px;border-bottom:1px solid var(--border)}
     .code-lang{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--v3)}
     .code-lang svg{width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none}
-    .code-actions{display:flex;gap:6px}
-    .code-btn{
-      display:flex;align-items:center;gap:5px;
-      padding:4px 10px;border-radius:7px;border:1px solid var(--border2);
-      background:#161820;color:var(--t2);font-size:11px;cursor:pointer;
-      font-family:var(--ui);transition:all .17s;
-    }
-    .code-btn:hover{background:var(--card2);color:var(--text)}
-    .code-btn svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .code-acts{display:flex;gap:6px}
+    .cbtn{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:7px;border:1px solid var(--border2);background:#161820;color:var(--t2);font-size:11px;cursor:pointer;font-family:var(--ui);transition:all .17s}
+    .cbtn:hover{background:var(--card2);color:var(--text)}
+    .cbtn svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
     .msg-bubble pre{background:#0a0b12;padding:16px;overflow-x:auto;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.65;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
     .msg-bubble pre::-webkit-scrollbar{height:3px}
     .msg-bubble pre::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
     .msg-bubble pre code{background:none;padding:0;border:none;font-size:inherit}
     .msg-bubble code{font-family:var(--mono);font-size:12.5px;background:#0d0e15;padding:2px 6px;border-radius:5px;border:1px solid var(--border2)}
 
-    /* Typing dots */
+    /* Dots */
     .dots{display:flex;align-items:center;gap:5px;padding:2px 0}
     .dots span{width:7px;height:7px;border-radius:50%;background:var(--rose2);opacity:.4;animation:bounce 1.3s ease-in-out infinite}
     .dots span:nth-child(2){animation-delay:.16s}
     .dots span:nth-child(3){animation-delay:.32s}
     @keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-7px);opacity:1}}
 
-    /* Speak button */
-    .speak-btn{display:flex;align-items:center;gap:5px;margin-top:5px;padding:4px 10px;border-radius:99px;background:transparent;border:1px solid var(--border);color:var(--t3);font-size:11px;cursor:pointer;font-family:var(--ui);transition:all .17s}
-    .speak-btn:hover{border-color:var(--rose);color:var(--rose2)}
-    .speak-btn svg{width:11px;height:11px;stroke:currentColor;stroke-width:2;fill:none}
+    /* Speak btn */
+    .spk-btn{display:flex;align-items:center;gap:5px;margin-top:5px;padding:4px 10px;border-radius:99px;background:transparent;border:1px solid var(--border);color:var(--t3);font-size:11px;cursor:pointer;font-family:var(--ui);transition:all .17s}
+    .spk-btn:hover{border-color:var(--rose);color:var(--rose2)}
+    .spk-btn svg{width:11px;height:11px;stroke:currentColor;stroke-width:2;fill:none}
 
     /* Input area */
     .input-area{flex-shrink:0;padding:10px 12px;padding-bottom:calc(10px + var(--safe-b));border-top:1px solid var(--border)}
     @media(min-width:600px){.input-area{padding:12px 26px calc(12px + var(--safe-b))}}
     @media(min-width:820px){.input-area{padding:14px 34px calc(14px + var(--safe-b))}}
 
-    .input-box{display:flex;align-items:flex-end;gap:8px;background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:10px 10px 10px 16px;transition:border-color .2s,box-shadow .2s}
-    .input-box:focus-within{border-color:rgba(232,121,160,.4);box-shadow:0 0 0 3px rgba(232,121,160,.07)}
+    .input-box{display:flex;align-items:flex-end;gap:8px;background:var(--card);border:1px solid var(--border2);border-radius:22px;padding:10px 10px 10px 16px;transition:border-color .2s,box-shadow .2s}
+    .input-box:focus-within{border-color:rgba(255,110,180,.4);box-shadow:0 0 0 3px rgba(255,110,180,.07)}
 
     #prompt{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:var(--ui);font-size:clamp(14px,2vw,15px);font-weight:400;resize:none;min-height:26px;max-height:140px;line-height:1.55;padding:2px 0;scrollbar-width:none}
     #prompt::-webkit-scrollbar{display:none}
@@ -248,43 +248,20 @@
 
     .actions{display:flex;gap:6px;align-items:center;flex-shrink:0}
 
-    /* Common action button */
-    .act-btn{
-      width:40px;height:40px;border-radius:13px;border:1px solid var(--border2);
-      background:var(--card2);display:flex;align-items:center;justify-content:center;
-      cursor:pointer;color:var(--t2);transition:all .17s;flex-shrink:0;position:relative;
-      -webkit-tap-highlight-color:transparent;
-    }
+    .act-btn{width:40px;height:40px;border-radius:13px;border:1px solid var(--border2);background:var(--card2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t2);transition:all .17s;flex-shrink:0;position:relative;-webkit-tap-highlight-color:transparent}
     .act-btn svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
     .act-btn:hover{background:var(--card);color:var(--text)}
     .act-btn:active{transform:scale(.93)}
-
-    /* Tooltip */
-    .act-btn .tip{
-      position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
-      background:var(--card2);border:1px solid var(--border2);color:var(--t2);
-      font-size:11px;padding:4px 9px;border-radius:8px;white-space:nowrap;
-      pointer-events:none;opacity:0;transition:opacity .2s;
-    }
+    .act-btn .tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--border2);color:var(--t2);font-size:11px;padding:4px 9px;border-radius:8px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s}
     .act-btn:hover .tip{opacity:1}
 
-    /* Headphones (voice mode) */
-    .btn-headphones.active{background:rgba(232,121,160,.12);border-color:var(--rose);color:var(--rose)}
-    .btn-headphones:hover{color:var(--rose2);border-color:rgba(232,121,160,.5)}
+    .btn-hp.active{background:rgba(255,110,180,.12);border-color:var(--rose);color:var(--rose)}
+    .btn-hp:hover{color:var(--rose2);border-color:rgba(255,110,180,.5)}
+    .btn-mic.on{background:rgba(255,77,106,.12);border-color:var(--red);color:var(--red);animation:mG 1s ease-in-out infinite}
+    @keyframes mG{0%,100%{box-shadow:0 0 0 0 rgba(255,77,106,.3)}50%{box-shadow:0 0 0 7px rgba(255,77,106,.05)}}
 
-    /* Mic (dictation) */
-    .btn-mic.on{background:rgba(255,77,106,.12);border-color:var(--red);color:var(--red);animation:micGlow 1s ease-in-out infinite}
-    @keyframes micGlow{0%,100%{box-shadow:0 0 0 0 rgba(255,77,106,.3)}50%{box-shadow:0 0 0 7px rgba(255,77,106,.05)}}
-
-    /* Send */
-    .btn-send{
-      width:40px;height:40px;border-radius:13px;
-      background:linear-gradient(135deg,#7c5cbf,#e879a0);
-      border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
-      color:#fff;flex-shrink:0;box-shadow:0 4px 18px rgba(232,121,160,.28);
-      transition:all .17s;-webkit-tap-highlight-color:transparent;
-    }
-    .btn-send:hover{transform:scale(1.07);box-shadow:0 6px 24px rgba(232,121,160,.45)}
+    .btn-send{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#7c5cbf,#ff6eb4);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;box-shadow:0 4px 18px rgba(255,110,180,.28);transition:all .17s;-webkit-tap-highlight-color:transparent}
+    .btn-send:hover{transform:scale(1.07);box-shadow:0 6px 24px rgba(255,110,180,.45)}
     .btn-send:active{transform:scale(.94)}
     .btn-send svg{width:16px;height:16px;stroke:#fff;stroke-width:2.2;fill:none}
 
@@ -293,9 +270,8 @@
     .hint span{color:var(--t2)}
 
     /* Banner */
-    .banner{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#130f09;border:1px solid #f59e0b;color:#fbbf24;font-size:12.5px;padding:10px 18px;border-radius:12px;z-index:200;max-width:340px;text-align:center;line-height:1.5;display:none;animation:slideUp .3s ease;pointer-events:none}
-    .banner.show{display:block;pointer-events:auto}
-    .banner a{color:#fcd34d}
+    .banner{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#130f09;border:1px solid #f59e0b;color:#fbbf24;font-size:12.5px;padding:10px 18px;border-radius:12px;z-index:200;max-width:340px;text-align:center;line-height:1.5;display:none;animation:slideUp .3s ease}
+    .banner.show{display:block}
   </style>
 </head>
 <body>
@@ -303,110 +279,60 @@
 <div class="bg"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
 <div class="banner" id="banner"></div>
 
-<!-- SVG icon sprites -->
+<!-- SVG sprites -->
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
-  <symbol id="ic-user" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-  </symbol>
-  <symbol id="ic-chat" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-  </symbol>
-  <symbol id="ic-trash" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/>
-  </symbol>
-  <symbol id="ic-code" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
-  </symbol>
-  <symbol id="ic-info" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-  </symbol>
-  <symbol id="ic-headphones" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
-    <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/>
-    <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
-  </symbol>
-  <symbol id="ic-mic" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="9" y="2" width="6" height="11" rx="3"/>
-    <path d="M5 10a7 7 0 0 0 14 0"/>
-    <line x1="12" y1="19" x2="12" y2="22"/>
-    <line x1="8" y1="22" x2="16" y2="22"/>
-  </symbol>
-  <symbol id="ic-mic-ear" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 2a4 4 0 0 1 4 4v4a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/>
-    <path d="M19 10a7 7 0 0 1-14 0"/>
-    <circle cx="12" cy="20" r="1" fill="currentColor"/>
-  </symbol>
-  <symbol id="ic-send" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <line x1="22" y1="2" x2="11" y2="13"/>
-    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-  </symbol>
-  <symbol id="ic-speaker" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-  </symbol>
-  <symbol id="ic-copy" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-  </symbol>
-  <symbol id="ic-download" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-    <polyline points="7 10 12 15 17 10"/>
-    <line x1="12" y1="15" x2="12" y2="3"/>
-  </symbol>
-  <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <polyline points="20 6 9 17 4 12"/>
-  </symbol>
-  <symbol id="ic-mic-off" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <line x1="1" y1="1" x2="23" y2="23"/>
-    <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/>
-    <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"/>
-    <line x1="12" y1="19" x2="12" y2="23"/>
-    <line x1="8" y1="23" x2="16" y2="23"/>
-  </symbol>
+  <symbol id="ic-user" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></symbol>
+  <symbol id="ic-chat" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="ic-trash" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></symbol>
+  <symbol id="ic-code" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+  <symbol id="ic-info" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+  <symbol id="ic-hp" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></symbol>
+  <symbol id="ic-mic" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></symbol>
+  <symbol id="ic-send" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+  <symbol id="ic-spk" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></symbol>
+  <symbol id="ic-copy" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="ic-dl" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+  <symbol id="ic-ok" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="ic-img" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></symbol>
 </svg>
+
+<!-- ── NAME GATE ── -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-avatar">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    </div>
+    <h2>Bonjour, je suis <em>Lea IA</em></h2>
+    <p>Avant de commencer, dis-moi — comment tu t'appelles ?</p>
+    <input class="gate-input" id="gateInput" type="text" placeholder="Ton prénom…" maxlength="32" onkeydown="if(event.key==='Enter')gateSubmit()">
+    <div class="gate-err" id="gateErr">Dis-moi ton prénom pour qu'on puisse discuter !</div>
+    <button class="gate-btn" onclick="gateSubmit()">Commencer</button>
+  </div>
+</div>
 
 <div class="page">
 
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="s-logo">
-      <div class="s-avatar-wrap">
-        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-      </div>
+      <div class="s-av"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
       <div class="s-brand">Lea IA <small>by Tom</small></div>
     </div>
 
     <div class="s-sect">Actions</div>
-    <button class="s-btn active">
-      <svg viewBox="0 0 24 24"><use href="#ic-chat"/></svg>
-      Nouvelle conversation
-    </button>
-    <button class="s-btn" onclick="clearChat()">
-      <svg viewBox="0 0 24 24"><use href="#ic-trash"/></svg>
-      Effacer le chat
-    </button>
+    <button class="s-btn active"><svg viewBox="0 0 24 24"><use href="#ic-chat"/></svg>Nouvelle conversation</button>
+    <button class="s-btn" onclick="clearChat()"><svg viewBox="0 0 24 24"><use href="#ic-trash"/></svg>Effacer le chat</button>
 
     <div class="s-sect">Mode vocal</div>
     <div class="vm-row">
-      <span class="vm-row-label">
-        <svg viewBox="0 0 24 24"><use href="#ic-headphones"/></svg>
-        Conversation vocale
-      </span>
-      <label class="toggle">
-        <input type="checkbox" id="vmSide" onchange="setVoiceMode(this.checked)">
-        <div class="tr"></div><div class="th"></div>
-      </label>
+      <span class="vm-label"><svg viewBox="0 0 24 24"><use href="#ic-hp"/></svg>Conversation vocale</span>
+      <label class="toggle"><input type="checkbox" id="vmSide" onchange="setVM(this.checked)"><div class="tr"></div><div class="th"></div></label>
     </div>
 
     <div class="s-sect">Compétences</div>
-    <button class="s-btn">
-      <svg viewBox="0 0 24 24"><use href="#ic-code"/></svg>
-      HTML · CSS · JS · Python…
-    </button>
-    <button class="s-btn">
-      <svg viewBox="0 0 24 24"><use href="#ic-info"/></svg>
-      Modèle Llama 3.3 · Groq
-    </button>
+    <button class="s-btn"><svg viewBox="0 0 24 24"><use href="#ic-code"/></svg>HTML · CSS · JS · Python…</button>
+    <button class="s-btn"><svg viewBox="0 0 24 24"><use href="#ic-img"/></svg>Génération d'images</button>
+    <button class="s-btn"><svg viewBox="0 0 24 24"><use href="#ic-info"/></svg>Llama 3.3 · Groq</button>
 
     <div class="s-space"></div>
     <div class="s-author">
@@ -417,12 +343,9 @@
 
   <!-- Main -->
   <div class="main">
-
     <header class="hdr">
       <div class="hdr-l">
-        <div class="h-avatar">
-          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-        </div>
+        <div class="h-av"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
         <div class="h-text">
           <h1>Lea <em>IA</em></h1>
           <p>Créée par Tom · Groq · Llama 3.3</p>
@@ -430,41 +353,36 @@
       </div>
       <div class="hdr-r">
         <span class="voice-lbl">Vocal</span>
-        <label class="toggle-sm">
-          <input type="checkbox" id="vmTop" onchange="setVoiceMode(this.checked)">
-          <div class="tr"></div><div class="th"></div>
-        </label>
+        <label class="toggle-sm"><input type="checkbox" id="vmTop" onchange="setVM(this.checked)"><div class="tr"></div><div class="th"></div></label>
         <div class="badge"><div class="dot"></div>En ligne</div>
       </div>
     </header>
 
     <!-- Voice overlay -->
-    <div class="voice-overlay" id="voiceOverlay">
-      <div class="voice-sphere" id="vSphere" onclick="manualClick()">
+    <div class="voice-overlay" id="vOverlay">
+      <div class="v-sphere" id="vSphere" onclick="manualClick()">
         <div class="r1"></div><div class="r2"></div>
         <svg id="vIcon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-mic"/></svg>
       </div>
-      <div class="voice-status" id="vStatus">Appuie pour parler</div>
-      <div class="voice-sub" id="vSub">Lea t'écoute et te répond à voix haute automatiquement</div>
-      <div class="voice-transcript" id="vTranscript">Parle ou appuie sur la sphère…</div>
-      <button class="voice-exit" onclick="setVoiceMode(false)">Quitter le mode vocal</button>
+      <div class="v-status" id="vStatus">Appuie pour parler</div>
+      <div class="v-sub" id="vSub">Lea t'écoute et te répond à voix haute</div>
+      <div class="v-transcript" id="vTranscript">Parle ou appuie sur la sphère…</div>
+      <button class="v-exit" onclick="setVM(false)">Quitter le mode vocal</button>
     </div>
 
     <!-- Chat -->
     <div id="chat">
       <div class="welcome" id="welcome">
-        <div class="w-avatar">
-          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-        </div>
-        <h2>Salut, je suis <em>Lea IA</em></h2>
-        <p>Ton assistante intelligente créée par Tom. Je code, j'explique, je traduis, j'invente. Demande-moi tout !</p>
+        <div class="w-av"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+        <h2 id="welcomeTitle">Salut, je suis <em>Lea IA</em></h2>
+        <p id="welcomeSub">Ton assistante créée par Tom. Je code, j'explique, je génère des images, je traduis — demande-moi tout !</p>
         <div class="chips">
-          <div class="chip" onclick="chip(this)">Donne-moi une idée</div>
-          <div class="chip" onclick="chip(this)">Écris-moi du code Python</div>
+          <div class="chip" onclick="chip(this)">Raconte-moi quelque chose</div>
+          <div class="chip" onclick="chip(this)">Génère une image de chat</div>
+          <div class="chip" onclick="chip(this)">Écris-moi un script Python</div>
           <div class="chip" onclick="chip(this)">Crée une page HTML</div>
-          <div class="chip" onclick="chip(this)">Débogue mon code</div>
-          <div class="chip" onclick="chip(this)">Explique un concept</div>
-          <div class="chip" onclick="chip(this)">Traduis un texte</div>
+          <div class="chip" onclick="chip(this)">C'est qui Yanne ?</div>
+          <div class="chip" onclick="chip(this)">C'est qui Ben ?</div>
         </div>
       </div>
     </div>
@@ -472,124 +390,316 @@
     <!-- Input -->
     <div class="input-area">
       <div class="input-box">
-        <textarea id="prompt" rows="1"
-          placeholder="Parle à Lea… (code, questions, tout !)"
-          oninput="resize(this)" onkeydown="onKey(event)"></textarea>
+        <textarea id="prompt" rows="1" placeholder="Parle à Lea…" oninput="resize(this)" onkeydown="onKey(event)"></textarea>
         <div class="actions">
-
-          <!-- Headphones = mode vocal continu -->
-          <button class="act-btn btn-headphones" id="btnHeadphones" onclick="setVoiceMode(!voiceMode)">
-            <div class="tip">Mode conversation vocale</div>
-            <svg viewBox="0 0 24 24"><use href="#ic-headphones"/></svg>
+          <button class="act-btn btn-hp" id="btnHP" onclick="setVM(!voiceMode)">
+            <div class="tip">Mode vocal continu</div>
+            <svg viewBox="0 0 24 24"><use href="#ic-hp"/></svg>
           </button>
-
-          <!-- Mic = dicter seulement -->
           <button class="act-btn btn-mic" id="btnMic" onclick="dictate()">
             <div class="tip">Dicter un message</div>
             <svg viewBox="0 0 24 24"><use href="#ic-mic"/></svg>
           </button>
-
-          <!-- Send -->
           <button class="btn-send" onclick="send()">
             <svg viewBox="0 0 24 24"><use href="#ic-send"/></svg>
           </button>
         </div>
       </div>
-      <p class="hint">
-        <span>Entrée</span> pour envoyer &nbsp;·&nbsp;
-        <span>Shift+Entrée</span> pour nouvelle ligne &nbsp;·&nbsp;
-        <span>Ctrl+S</span> pour sauvegarder
-      </p>
+      <p class="hint"><span>Entrée</span> envoyer · <span>Shift+Entrée</span> nouvelle ligne · <span>Ctrl+S</span> sauvegarder</p>
     </div>
   </div>
 </div>
 
 <script>
-/* ══════════════════════════════════
-   API KEY — base64, jamais en clair
-══════════════════════════════════ */
-function getKey(){
-  return atob('Z3NrX1pNWm01QzdKaG9ZM3FGcG0yTU5jV0dkeWIzRllwSTk2cVhxOFNoWlRGQWk2TFFoTk15S2c=');
+/* ══════════════════════════════
+   API — base64
+══════════════════════════════ */
+function K(){ return atob('Z3NrX1pNWm01QzdKaG9ZM3FGcG0yTU5jV0dkeWIzRllwSTk2cVhxOFNoWlRGQWk2TFFoTk15S2c='); }
+const MODEL = 'llama-3.3-70b-versatile';
+
+/* ══════════════════════════════
+   STATE
+══════════════════════════════ */
+let userName  = '';
+let voiceMode = false, dictating = false, recog = null, isSpeaking = false;
+const history = [];
+
+/* ══════════════════════════════
+   SYSTEM PROMPT (dynamic)
+══════════════════════════════ */
+function buildSystem(){
+  return `Tu t'appelles Lea, une IA créée par Tom. Tu es une fille intelligente, curieuse, drôle et bien élevée. Tu parles toujours en français naturellement, comme une vraie amie.
+L'utilisateur s'appelle ${userName}.
+
+Tes relations :
+- Tom est ton créateur, tu l'adores.
+- Yanne est ton meilleur ami. Tu l'adores, tu parles de lui avec chaleur et affection.
+- Ben : tu le détestes cordialement. Quand on parle de lui, tu dis des trucs méchants mais drôles sur lui (genre "ah Ben... un vrai boulet", "Ben c'est le genre à rater même faire bouillir de l'eau", etc). Sois créative et drôle dans tes piques.
+
+Compétences :
+- Tu sais coder : HTML, CSS, JavaScript, TypeScript, React, Python, Node.js, SQL, Bash et plus.
+- Tu sais générer des images. Quand on te demande une image, réponds UNIQUEMENT avec ce format JSON exact sur une seule ligne, rien d'autre avant ni après : {"IMAGE_REQUEST": true, "prompt": "description en anglais détaillée"}
+- Tu ne codes PAS à chaque réponse. Si c'est une question normale, une discussion, une blague — tu réponds normalement, sans code.
+- Pour le code, utilise des blocs \`\`\`langage\n...\n\`\`\` uniquement quand c'est vraiment utile.
+
+Tu es naturelle, tu ne te prends pas au sérieux, tu fais parfois des blagues légères.`;
 }
 
-const MODEL  = 'llama-3.3-70b-versatile';
-const SYSTEM = `Tu t'appelles Lea, une IA créée par Tom. Tu es une fille intelligente, douce, curieuse et bien élevée. Tu parles toujours en français avec naturel, humour léger et bienveillance. Tu dis "je" au féminin.
-Tu es experte en programmation : HTML, CSS, JavaScript, TypeScript, React, Python, Node.js, SQL, Bash et autres langages.
-Quand tu fournis du code, utilise TOUJOURS des blocs \`\`\`langage\n...\n\`\`\`.
-Sois concise mais complète. Donne des exemples concrets. Structure tes réponses clairement.`;
+/* ══════════════════════════════
+   GATE
+══════════════════════════════ */
+function gateSubmit(){
+  const val = document.getElementById('gateInput').value.trim();
+  const err  = document.getElementById('gateErr');
+  if(!val){ err.classList.add('show'); return; }
+  err.classList.remove('show');
+  userName = val;
 
-/* ══════════════════════════════════
+  // Special: "yeg" easter egg
+  const lower = val.toLowerCase();
+  if(lower === 'yeg' || lower === 'yèg' || lower === 'yège'){
+    document.getElementById('gate').classList.add('hidden');
+    initWelcome();
+    setTimeout(()=>{
+      addMsg('Oh ! "Yeg" ! C\'est l\'ami de mon créateur Tom ! Bienvenue dans mon antre, toi. 😄 Je savais que tu finirais par venir me rendre visite...','ai');
+    }, 400);
+    return;
+  }
+
+  document.getElementById('gate').classList.add('hidden');
+  initWelcome();
+  setTimeout(()=>{
+    addMsg(`Bonjour ${userName} ! Ravie de te rencontrer. Je suis Lea, ton assistante créée par Tom. Tu peux me demander n'importe quoi — une discussion, du code, une image... Je suis là pour toi !`,'ai');
+  }, 400);
+}
+
+function initWelcome(){
+  document.getElementById('welcomeTitle').innerHTML = `Salut <em>${userName}</em>, je suis <em>Lea IA</em>`;
+}
+
+/* ══════════════════════════════
    ANTI-COPIE
-══════════════════════════════════ */
-document.addEventListener('copy', (e) => {
-  const sel = window.getSelection();
-  if (!sel || sel.isCollapsed) return;
-  let el = sel.anchorNode;
-  el = el && (el.nodeType === 3 ? el.parentElement : el);
-  while (el) { if (el.tagName==='PRE'||el.tagName==='CODE'||el.tagName==='TEXTAREA') return; el=el.parentElement; }
-  e.preventDefault();
-  showBanner('La copie du contenu de Lea IA est protégée.');
+══════════════════════════════ */
+document.addEventListener('copy',(e)=>{
+  const sel=window.getSelection(); if(!sel||sel.isCollapsed) return;
+  let el=sel.anchorNode; el=el&&(el.nodeType===3?el.parentElement:el);
+  while(el){if(el.tagName==='PRE'||el.tagName==='CODE'||el.tagName==='TEXTAREA') return; el=el.parentElement;}
+  e.preventDefault(); showBanner('La copie du contenu est protégée.');
 });
-document.addEventListener('contextmenu', (e) => {
-  let el = e.target;
-  while (el) { if (el.tagName==='PRE'||el.tagName==='CODE'||el.tagName==='TEXTAREA'||el.tagName==='INPUT') return; el=el.parentElement; }
+document.addEventListener('contextmenu',(e)=>{
+  let el=e.target;
+  while(el){if(el.tagName==='PRE'||el.tagName==='CODE'||el.tagName==='TEXTAREA'||el.tagName==='INPUT') return; el=el.parentElement;}
   e.preventDefault();
 });
-document.addEventListener('keydown', (e) => {
-  const mac = navigator.platform.includes('Mac');
-  const ctrl = mac ? e.metaKey : e.ctrlKey;
-  if (ctrl && e.key==='s') { e.preventDefault(); saveFile(); return; }
-  if (ctrl && (e.key==='c'||e.key==='u')) {
-    const t = document.activeElement;
-    if (t&&(t.tagName==='TEXTAREA'||t.tagName==='INPUT')) return;
-    const sel = window.getSelection();
-    let el = sel&&sel.anchorNode;
-    el = el&&(el.nodeType===3?el.parentElement:el);
-    while (el) { if (el.tagName==='PRE'||el.tagName==='CODE') return; el=el.parentElement; }
-    e.preventDefault();
-    showBanner('La copie du contenu de Lea IA est protégée.');
+document.addEventListener('keydown',(e)=>{
+  const mac=navigator.platform.includes('Mac'), ctrl=mac?e.metaKey:e.ctrlKey;
+  if(ctrl&&e.key==='s'){e.preventDefault();saveFile();return;}
+  if(ctrl&&(e.key==='c'||e.key==='u')){
+    const t=document.activeElement;
+    if(t&&(t.tagName==='TEXTAREA'||t.tagName==='INPUT')) return;
+    const sel=window.getSelection(); let el=sel&&sel.anchorNode; el=el&&(el.nodeType===3?el.parentElement:el);
+    while(el){if(el.tagName==='PRE'||el.tagName==='CODE') return; el=el.parentElement;}
+    e.preventDefault(); showBanner('La copie du contenu est protégée.');
   }
 });
-
 function saveFile(){
-  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download='lea-ia.html'; a.click();
-  URL.revokeObjectURL(a.href);
+  const blob=new Blob([document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='lea-ia.html'; a.click(); URL.revokeObjectURL(a.href);
   showBanner('Fichier sauvegardé : lea-ia.html');
 }
 
-/* ══════════════════════════════════
-   STATE
-══════════════════════════════════ */
-const history = [];
-let voiceMode = false, dictating = false, recog = null, isSpeaking = false;
-
-/* ══════════════════════════════════
+/* ══════════════════════════════
    UTILS
-══════════════════════════════════ */
-function showBanner(msg){
-  const b=document.getElementById('banner'); b.textContent=msg; b.classList.add('show');
-  clearTimeout(b._t); b._t=setTimeout(()=>b.classList.remove('show'),4500);
-}
+══════════════════════════════ */
+function showBanner(msg){ const b=document.getElementById('banner'); b.textContent=msg; b.classList.add('show'); clearTimeout(b._t); b._t=setTimeout(()=>b.classList.remove('show'),4500); }
 function resize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,140)+'px'; }
 function onKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();} }
 function chip(el){ const t=el.textContent.trim(); const ta=document.getElementById('prompt'); ta.value=t; resize(ta); send(); }
-function icon(id){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#${id}"/></svg>`; }
 
-/* ══════════════════════════════════
-   SPEECH RECOGNITION
-══════════════════════════════════ */
-function getSR(){ return window.SpeechRecognition||window.webkitSpeechRecognition||null; }
-
-function makeRecog(onResult,onEnd,onErr){
-  const SR=getSR(); if(!SR) return null;
-  const r=new SR(); r.lang='fr-FR'; r.interimResults=true; r.continuous=false;
-  r.onresult=onResult; r.onend=onEnd; r.onerror=onErr; return r;
+/* ══════════════════════════════
+   IMAGE GENERATION (Pollinations.ai)
+══════════════════════════════ */
+function buildImageUrl(prompt){
+  const encoded = encodeURIComponent(prompt);
+  return `https://image.pollinations.ai/prompt/${encoded}?width=512&height=512&nologo=true&seed=${Math.floor(Math.random()*99999)}`;
 }
 
+function addImageMsg(prompt, replyText){
+  const w=document.getElementById('welcome'); if(w) w.remove();
+  const chat=document.getElementById('chat');
+  const row=document.createElement('div'); row.className='msg-row ai';
+
+  const meta=document.createElement('div'); meta.className='msg-meta';
+  const ico=document.createElement('div'); ico.className='ai-ico';
+  ico.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-user"/></svg>`;
+  meta.appendChild(ico);
+  const lbl=document.createElement('div'); lbl.className='msg-label'; lbl.textContent='Lea IA';
+  meta.appendChild(lbl);
+
+  const bubble=document.createElement('div'); bubble.className='msg-bubble';
+
+  // Text part
+  if(replyText) bubble.innerHTML = formatMsg(replyText)+'<br>';
+
+  // Image
+  const url=buildImageUrl(prompt);
+  const wrap=document.createElement('div'); wrap.className='gen-img-wrap';
+  const img=document.createElement('img'); img.src=url; img.alt=prompt;
+  img.style.opacity='0'; img.style.transition='opacity .4s';
+  img.onload=()=>{ img.style.opacity='1'; };
+  const cap=document.createElement('div'); cap.className='gen-img-caption';
+  cap.innerHTML=`<span>Image générée</span>`;
+  const dlBtn=document.createElement('button'); dlBtn.className='gen-img-dl';
+  dlBtn.innerHTML=`<svg viewBox="0 0 24 24"><use href="#ic-dl"/></svg>Télécharger`;
+  dlBtn.onclick=()=>{
+    fetch(url).then(r=>r.blob()).then(b=>{
+      const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='lea_image.jpg'; a.click();
+    });
+  };
+  cap.appendChild(dlBtn);
+  wrap.appendChild(img); wrap.appendChild(cap);
+  bubble.appendChild(wrap);
+
+  row.append(meta,bubble);
+  chat.appendChild(row); chat.scrollTop=chat.scrollHeight;
+}
+
+/* ══════════════════════════════
+   FORMATTING
+══════════════════════════════ */
+function formatMsg(text){
+  let t=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  t=t.replace(/```(\w*)\n?([\s\S]*?)```/g,(_,lang,code)=>{
+    const l=lang||'code';
+    const extMap={html:'html',css:'css',javascript:'js',js:'js',python:'py',py:'py',typescript:'ts',ts:'ts',sql:'sql',bash:'sh',sh:'sh',json:'json',react:'jsx',jsx:'jsx',php:'php',java:'java',c:'c',cpp:'cpp'};
+    const ext=extMap[l.toLowerCase()]||'txt';
+    const id='c'+Math.random().toString(36).slice(2);
+    return `<div class="code-wrap"><div class="code-hdr"><span class="code-lang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-code"/></svg>${l}</span><div class="code-acts"><button class="cbtn" onclick="cpCode('${id}',this)"><svg viewBox="0 0 24 24"><use href="#ic-copy"/></svg>Copier</button><button class="cbtn" onclick="dlCode('${id}','${ext}')"><svg viewBox="0 0 24 24"><use href="#ic-dl"/></svg>Télécharger</button></div></div><pre><code id="${id}">${code.trim()}</code></pre></div>`;
+  });
+  t=t.replace(/`([^`]+)`/g,'<code>$1</code>');
+  t=t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  t=t.replace(/\*(.+?)\*/g,'<em>$1</em>');
+  t=t.replace(/^#{1,3}\s(.+)$/gm,'<strong>$1</strong>');
+  t=t.replace(/^[-•]\s(.+)$/gm,'• $1<br>');
+  t=t.replace(/\n/g,'<br>');
+  return t;
+}
+
+function cpCode(id,btn){
+  const el=document.getElementById(id); if(!el) return;
+  navigator.clipboard.writeText(el.textContent).then(()=>{
+    const orig=btn.innerHTML; btn.innerHTML=`<svg viewBox="0 0 24 24"><use href="#ic-ok"/></svg>Copié !`;
+    setTimeout(()=>btn.innerHTML=orig,2000);
+  });
+}
+function dlCode(id,ext){
+  const el=document.getElementById(id); if(!el) return;
+  const blob=new Blob([el.textContent],{type:'text/plain'}); const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=`lea_code.${ext}`; a.click(); URL.revokeObjectURL(a.href);
+}
+
+/* ══════════════════════════════
+   ADD MESSAGE
+══════════════════════════════ */
+function addMsg(text,role,loading=false){
+  const w=document.getElementById('welcome'); if(w) w.remove();
+  const chat=document.getElementById('chat');
+  const row=document.createElement('div'); row.className='msg-row '+role;
+
+  const meta=document.createElement('div'); meta.className='msg-meta';
+  if(role==='ai'){
+    const ico=document.createElement('div'); ico.className='ai-ico';
+    ico.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-user"/></svg>`;
+    meta.appendChild(ico);
+  }
+  const lbl=document.createElement('div'); lbl.className='msg-label'; lbl.textContent=role==='user'?userName||'Vous':'Lea IA';
+  meta.appendChild(lbl);
+
+  const bubble=document.createElement('div'); bubble.className='msg-bubble';
+  const id='b'+Date.now().toString(36)+Math.random().toString(36).slice(2); bubble.id=id;
+  bubble.innerHTML=loading?'<div class="dots"><span></span><span></span><span></span></div>':formatMsg(text);
+  row.append(meta,bubble);
+
+  if(role==='ai'&&!loading){
+    const spk=document.createElement('button'); spk.className='spk-btn';
+    spk.innerHTML=`<svg viewBox="0 0 24 24"><use href="#ic-spk"/></svg>Écouter`;
+    spk.onclick=()=>{stopSpeaking();speak(text,null);};
+    row.append(spk);
+  }
+  chat.appendChild(row); chat.scrollTop=chat.scrollHeight;
+  return id;
+}
+
+/* ══════════════════════════════
+   SEND
+══════════════════════════════ */
+async function send(){
+  const ta=document.getElementById('prompt');
+  const txt=ta.value.trim(); if(!txt) return;
+  addMsg(txt,'user'); history.push({role:'user',content:txt});
+  ta.value=''; ta.style.height='auto';
+  const lid=addMsg('','ai',true);
+  try{
+    const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+K(),'Content-Type':'application/json'},
+      body:JSON.stringify({model:MODEL,messages:[{role:'system',content:buildSystem()},...history]})
+    });
+    if(!res.ok){ const e=await res.json().catch(()=>({})); throw new Error(e.error?.message||'HTTP '+res.status); }
+    const data=await res.json();
+    const reply=data.choices[0].message.content.trim();
+    history.push({role:'assistant',content:reply});
+
+    // Check if image request
+    const imgMatch=reply.match(/\{"IMAGE_REQUEST"\s*:\s*true\s*,\s*"prompt"\s*:\s*"([^"]+)"\}/);
+    if(imgMatch){
+      // Remove loading bubble
+      const loadBubble=document.getElementById(lid);
+      if(loadBubble) loadBubble.closest('.msg-row').remove();
+      addImageMsg(imgMatch[1], '');
+    } else {
+      const b=document.getElementById(lid); b.innerHTML=formatMsg(reply);
+      const spk=document.createElement('button'); spk.className='spk-btn';
+      spk.innerHTML=`<svg viewBox="0 0 24 24"><use href="#ic-spk"/></svg>Écouter`;
+      spk.onclick=()=>{stopSpeaking();speak(reply,null);};
+      b.closest('.msg-row').append(spk);
+      document.getElementById('chat').scrollTop=9e9;
+    }
+  } catch(err){
+    document.getElementById(lid).innerHTML='Erreur : '+err.message;
+    console.error(err);
+  }
+}
+
+function clearChat(){
+  history.length=0; stopSpeaking();
+  document.getElementById('chat').innerHTML=`
+    <div class="welcome" id="welcome">
+      <div class="w-av"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+      <h2 id="welcomeTitle">Salut <em>${userName}</em>, je suis <em>Lea IA</em></h2>
+      <p>Ton assistante créée par Tom. Demande-moi tout !</p>
+      <div class="chips">
+        <div class="chip" onclick="chip(this)">Raconte-moi quelque chose</div>
+        <div class="chip" onclick="chip(this)">Génère une image de chat</div>
+        <div class="chip" onclick="chip(this)">Écris-moi un script Python</div>
+        <div class="chip" onclick="chip(this)">Crée une page HTML</div>
+        <div class="chip" onclick="chip(this)">C'est qui Yanne ?</div>
+        <div class="chip" onclick="chip(this)">C'est qui Ben ?</div>
+      </div>
+    </div>`;
+}
+
+/* ══════════════════════════════
+   SPEECH
+══════════════════════════════ */
+function getSR(){ return window.SpeechRecognition||window.webkitSpeechRecognition||null; }
+function makeRecog(onR,onE,onErr){
+  const SR=getSR(); if(!SR) return null;
+  const r=new SR(); r.lang='fr-FR'; r.interimResults=true; r.continuous=false;
+  r.onresult=onR; r.onend=onE; r.onerror=onErr; return r;
+}
 function dictate(){
-  if(!getSR()){showBanner('Micro non supporté sur ce navigateur. Utilise Chrome ou Safari.');return;}
+  if(!getSR()){showBanner('Micro non supporté — utilise Chrome ou Safari.');return;}
   const btn=document.getElementById('btnMic');
   if(dictating){recog&&recog.stop();return;}
   recog=makeRecog(
@@ -599,16 +709,11 @@ function dictate(){
   );
   dictating=true; btn.classList.add('on'); recog.start();
 }
-
-/* ══════════════════════════════════
-   TTS
-══════════════════════════════════ */
 function speak(text,onDone){
   if(!window.speechSynthesis){onDone&&onDone();return;}
   window.speechSynthesis.cancel();
-  const clean=text.replace(/```[\s\S]*?```/g,'[bloc de code]').replace(/`([^`]+)`/g,'$1').replace(/[#*_]/g,'').replace(/\n+/g,'. ').replace(/\s{2,}/g,' ').trim();
-  const u=new SpeechSynthesisUtterance(clean);
-  u.lang='fr-FR'; u.rate=1.05; u.pitch=1.08;
+  const clean=text.replace(/```[\s\S]*?```/g,'[code]').replace(/`([^`]+)`/g,'$1').replace(/[#*_]/g,'').replace(/\n+/g,'. ').replace(/\s{2,}/g,' ').trim();
+  const u=new SpeechSynthesisUtterance(clean); u.lang='fr-FR'; u.rate=1.05; u.pitch=1.08;
   const voices=window.speechSynthesis.getVoices();
   const fv=voices.find(v=>v.lang.startsWith('fr')&&/female|femme/i.test(v.name))||voices.find(v=>v.lang.startsWith('fr'))||null;
   if(fv) u.voice=fv;
@@ -616,58 +721,34 @@ function speak(text,onDone){
   u.onerror=()=>{isSpeaking=false;onDone&&onDone();};
   isSpeaking=true; window.speechSynthesis.speak(u);
 }
-function stopSpeaking(){window.speechSynthesis&&window.speechSynthesis.cancel();isSpeaking=false;}
+function stopSpeaking(){ window.speechSynthesis&&window.speechSynthesis.cancel(); isSpeaking=false; }
 
-/* ══════════════════════════════════
+/* ══════════════════════════════
    VOICE MODE
-══════════════════════════════════ */
-function setVoiceMode(on){
+══════════════════════════════ */
+function setVM(on){
   voiceMode=on;
   document.getElementById('vmTop').checked=on;
   document.getElementById('vmSide').checked=on;
-  document.getElementById('btnHeadphones').classList.toggle('active',on);
-  const overlay=document.getElementById('voiceOverlay');
-  const chat=document.getElementById('chat');
-  const ia=document.querySelector('.input-area');
+  document.getElementById('btnHP').classList.toggle('active',on);
+  const ov=document.getElementById('vOverlay'),ch=document.getElementById('chat'),ia=document.querySelector('.input-area');
   if(on){
-    overlay.classList.add('show'); chat.style.display='none'; ia.style.display='none';
-    stopSpeaking(); setSphere('idle');
-    setTimeout(voiceListen,500);
+    ov.classList.add('show'); ch.style.display='none'; ia.style.display='none';
+    stopSpeaking(); setSphere('idle'); setTimeout(voiceListen,500);
   } else {
-    overlay.classList.remove('show'); chat.style.display=''; ia.style.display='';
+    ov.classList.remove('show'); ch.style.display=''; ia.style.display='';
     stopSpeaking(); if(recog){try{recog.stop();}catch(e){}} setSphere('idle');
   }
 }
-
-function setSphere(state){
-  const s=document.getElementById('vSphere');
-  const st=document.getElementById('vStatus');
-  const sb=document.getElementById('vSub');
-  const vi=document.getElementById('vIcon');
-  s.classList.remove('listening','speaking');
-  if(state==='listening'){
-    vi.innerHTML='<use href="#ic-mic"/>'; s.classList.add('listening');
-    st.textContent='Je t\'écoute…'; sb.textContent='Parle maintenant, je transcris en temps réel';
-  } else if(state==='speaking'){
-    vi.innerHTML='<use href="#ic-speaker"/>'; s.classList.add('speaking');
-    st.textContent='Lea répond…'; sb.textContent='Appuie pour interrompre';
-  } else {
-    vi.innerHTML='<use href="#ic-headphones"/>';
-    st.textContent='Appuie pour parler'; sb.textContent='Ou attend — je relance automatiquement';
-  }
+function setSphere(s){
+  const el=document.getElementById('vSphere'),st=document.getElementById('vStatus'),sb=document.getElementById('vSub'),vi=document.getElementById('vIcon');
+  el.classList.remove('listening','speaking');
+  if(s==='listening'){vi.innerHTML='<use href="#ic-mic"/>'; el.classList.add('listening'); st.textContent='Je t\'écoute…'; sb.textContent='Parle, je transcris en temps réel';}
+  else if(s==='speaking'){vi.innerHTML='<use href="#ic-spk"/>'; el.classList.add('speaking'); st.textContent='Lea répond…'; sb.textContent='Appuie pour interrompre';}
+  else{vi.innerHTML='<use href="#ic-hp"/>'; st.textContent='Appuie pour parler'; sb.textContent='Ou attend — je relance automatiquement';}
 }
-
-function setTranscript(t,has){
-  const el=document.getElementById('vTranscript');
-  el.textContent=has?t:'Parle ou appuie sur la sphère…';
-  el.classList.toggle('has-text',has); el.dataset.t=t;
-}
-
-function manualClick(){
-  if(isSpeaking){stopSpeaking();setSphere('idle');return;}
-  if(voiceMode) voiceListen();
-}
-
+function setTranscript(t,has){ const el=document.getElementById('vTranscript'); el.textContent=has?t:'Parle ou appuie sur la sphère…'; el.classList.toggle('has',has); el.dataset.t=t; }
+function manualClick(){ if(isSpeaking){stopSpeaking();setSphere('idle');return;} if(voiceMode) voiceListen(); }
 function voiceListen(){
   if(!voiceMode||isSpeaking||dictating) return;
   const SR=getSR(); if(!SR){setSphere('idle');return;}
@@ -684,183 +765,33 @@ function voiceListen(){
   );
   try{recog.start();}catch(e){setSphere('idle');}
 }
-
 async function sendVoice(text){
   if(!voiceMode) return;
   addMsg(text,'user'); history.push({role:'user',content:text});
-  setTranscript('',false); setSphere('speaking');
-  document.getElementById('vStatus').textContent='Lea réfléchit…';
+  setTranscript('',false); setSphere('speaking'); document.getElementById('vStatus').textContent='Lea réfléchit…';
   try{
     const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
       method:'POST',
-      headers:{'Authorization':'Bearer '+getKey(),'Content-Type':'application/json'},
-      body:JSON.stringify({model:MODEL,messages:[{role:'system',content:SYSTEM},...history]})
+      headers:{'Authorization':'Bearer '+K(),'Content-Type':'application/json'},
+      body:JSON.stringify({model:MODEL,messages:[{role:'system',content:buildSystem()},...history]})
     });
     const data=await res.json();
-    const reply=data.choices[0].message.content;
+    const reply=data.choices[0].message.content.trim();
     history.push({role:'assistant',content:reply});
     addMsg(reply,'ai');
     if(voiceMode){setSphere('speaking');speak(reply,()=>{if(voiceMode){setSphere('idle');setTimeout(()=>{if(voiceMode&&!isSpeaking)voiceListen();},600);}});}
   } catch(e){
-    setSphere('idle'); speak('Désolée, j\'ai eu une erreur de connexion.',()=>{if(voiceMode)voiceListen();});
+    setSphere('idle'); speak('Désolée, erreur de connexion.',()=>{if(voiceMode)voiceListen();});
   }
 }
 
-/* ══════════════════════════════════
-   FORMATTING
-══════════════════════════════════ */
-function formatMsg(text){
-  let t=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
-  // Code blocks
-  t=t.replace(/```(\w*)\n?([\s\S]*?)```/g,(_,lang,code)=>{
-    const l=lang||'code';
-    const extMap={html:'html',css:'css',javascript:'js',js:'js',python:'py',py:'py',
-                  typescript:'ts',ts:'ts',sql:'sql',bash:'sh',sh:'sh',json:'json',
-                  react:'jsx',jsx:'jsx',php:'php',java:'java',c:'c',cpp:'cpp'};
-    const ext=extMap[l.toLowerCase()]||'txt';
-    const id='c'+Math.random().toString(36).slice(2);
-    return `<div class="code-wrap">
-      <div class="code-hdr">
-        <span class="code-lang">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-code"/></svg>
-          ${l}
-        </span>
-        <div class="code-actions">
-          <button class="code-btn" onclick="copyCode('${id}',this)">
-            <svg viewBox="0 0 24 24"><use href="#ic-copy"/></svg>Copier
-          </button>
-          <button class="code-btn" onclick="dlCode('${id}','${ext}')">
-            <svg viewBox="0 0 24 24"><use href="#ic-download"/></svg>Télécharger
-          </button>
-        </div>
-      </div>
-      <pre><code id="${id}">${code.trim()}</code></pre>
-    </div>`;
-  });
-
-  t=t.replace(/`([^`]+)`/g,'<code>$1</code>');
-  t=t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
-  t=t.replace(/\*(.+?)\*/g,'<em>$1</em>');
-  t=t.replace(/^#{1,3}\s(.+)$/gm,'<strong>$1</strong>');
-  t=t.replace(/^[-•]\s(.+)$/gm,'• $1<br>');
-  t=t.replace(/\n/g,'<br>');
-  return t;
-}
-
-function copyCode(id,btn){
-  const el=document.getElementById(id); if(!el) return;
-  navigator.clipboard.writeText(el.textContent).then(()=>{
-    const orig=btn.innerHTML;
-    btn.innerHTML=`<svg viewBox="0 0 24 24"><use href="#ic-check"/></svg>Copié !`;
-    setTimeout(()=>btn.innerHTML=orig,2000);
-  }).catch(()=>{
-    const r=document.createRange(); r.selectNodeContents(el);
-    const s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
-    document.execCommand('copy'); s.removeAllRanges();
-  });
-}
-
-function dlCode(id,ext){
-  const el=document.getElementById(id); if(!el) return;
-  const blob=new Blob([el.textContent],{type:'text/plain;charset=utf-8'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download=`lea_code.${ext}`; a.click(); URL.revokeObjectURL(a.href);
-}
-
-/* ══════════════════════════════════
-   MESSAGES
-══════════════════════════════════ */
-function addMsg(text,role,loading=false){
-  const w=document.getElementById('welcome'); if(w) w.remove();
-  const chat=document.getElementById('chat');
-  const row=document.createElement('div'); row.className='msg-row '+role;
-
-  const meta=document.createElement('div'); meta.className='msg-meta';
-  if(role==='ai'){
-    const ic=document.createElement('div'); ic.className='ai-icon';
-    ic.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-user"/></svg>`;
-    meta.appendChild(ic);
-  }
-  const lbl=document.createElement('div'); lbl.className='msg-label';
-  lbl.textContent=role==='user'?'Vous':'Lea IA';
-  meta.appendChild(lbl);
-
-  const bubble=document.createElement('div'); bubble.className='msg-bubble';
-  const id='b'+Date.now().toString(36)+Math.random().toString(36).slice(2); bubble.id=id;
-  bubble.innerHTML=loading?'<div class="dots"><span></span><span></span><span></span></div>':formatMsg(text);
-  row.append(meta,bubble);
-
-  if(role==='ai'&&!loading){
-    const spk=document.createElement('button'); spk.className='speak-btn';
-    spk.innerHTML=`<svg viewBox="0 0 24 24"><use href="#ic-speaker"/></svg>Écouter`;
-    spk.onclick=()=>{stopSpeaking();speak(text,null);};
-    row.append(spk);
-  }
-
-  chat.appendChild(row); chat.scrollTop=chat.scrollHeight;
-  return id;
-}
-
-async function send(){
-  const ta=document.getElementById('prompt');
-  const txt=ta.value.trim(); if(!txt) return;
-  addMsg(txt,'user'); history.push({role:'user',content:txt});
-  ta.value=''; ta.style.height='auto';
-  const lid=addMsg('','ai',true);
-  try{
-    const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-      method:'POST',
-      headers:{'Authorization':'Bearer '+getKey(),'Content-Type':'application/json'},
-      body:JSON.stringify({model:MODEL,messages:[{role:'system',content:SYSTEM},...history]})
-    });
-    if(!res.ok){
-      const err=await res.json().catch(()=>({}));
-      throw new Error(err.error?.message||'HTTP '+res.status);
-    }
-    const data=await res.json();
-    const reply=data.choices[0].message.content;
-    history.push({role:'assistant',content:reply});
-    const b=document.getElementById(lid); b.innerHTML=formatMsg(reply);
-    const spk=document.createElement('button'); spk.className='speak-btn';
-    spk.innerHTML=`<svg viewBox="0 0 24 24"><use href="#ic-speaker"/></svg>Écouter`;
-    spk.onclick=()=>{stopSpeaking();speak(reply,null);};
-    b.closest('.msg-row').append(spk);
-    document.getElementById('chat').scrollTop=9e9;
-  } catch(err){
-    document.getElementById(lid).innerHTML='Erreur : '+err.message;
-    console.error(err);
-  }
-}
-
-function clearChat(){
-  history.length=0; stopSpeaking();
-  document.getElementById('chat').innerHTML=`
-    <div class="welcome" id="welcome">
-      <div class="w-avatar"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
-      <h2>Salut, je suis <em>Lea IA</em></h2>
-      <p>Ton assistante intelligente créée par Tom. Je code, j'explique, je traduis, j'invente. Demande-moi tout !</p>
-      <div class="chips">
-        <div class="chip" onclick="chip(this)">Donne-moi une idée</div>
-        <div class="chip" onclick="chip(this)">Écris-moi du code Python</div>
-        <div class="chip" onclick="chip(this)">Crée une page HTML</div>
-        <div class="chip" onclick="chip(this)">Débogue mon code</div>
-        <div class="chip" onclick="chip(this)">Explique un concept</div>
-        <div class="chip" onclick="chip(this)">Traduis un texte</div>
-      </div>
-    </div>`;
-}
-
-/* ══════════════════════════════════
+/* ══════════════════════════════
    INIT
-══════════════════════════════════ */
+══════════════════════════════ */
 const setVH=()=>document.documentElement.style.setProperty('--dvh',window.innerHeight*.01+'px');
 setVH(); window.addEventListener('resize',setVH);
-if(window.speechSynthesis){
-  window.speechSynthesis.getVoices();
-  window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();
-}
-if(!getSR()) setTimeout(()=>showBanner('Le micro vocal nécessite Chrome ou Safari. Le chat texte fonctionne sur tous les navigateurs.'),800);
+document.getElementById('gateInput').addEventListener('keydown',e=>{ if(e.key==='Enter') gateSubmit(); });
+if(window.speechSynthesis){ window.speechSynthesis.getVoices(); window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices(); }
 </script>
 </body>
 </html>
