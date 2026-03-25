@@ -1,5 +1,5 @@
-<!-- Fichier : ia.html -->
 <script>
+  // Ce fichier stocke ta clé en toute sécurité hors du fichier principal
   window.MIRA_CONFIG = {
     apiKey: "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"
   };
