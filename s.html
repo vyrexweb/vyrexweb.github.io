@@ -5,316 +5,700 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ScreenCast</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #0f0f0f; --surface: #1a1a1a; --border: #2a2a2a;
-    --text: #f0f0f0; --muted: #888;
-    --red: #e74c3c; --red-dark: #c0392b;
-    --blue: #3498db; --blue-dark: #2980b9;
-    --green: #2ecc71;
-  }
-  body {
-    background: var(--bg); color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    min-height: 100vh; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 2rem; padding: 2rem;
-    user-select: none;
-  }
-  h1 { font-size: 1.4rem; font-weight: 600; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
-  .buttons { display: flex; gap: 2rem; align-items: center; justify-content: center; }
-  .btn {
-    width: 140px; height: 140px; border-radius: 50%; border: none; cursor: pointer;
-    font-size: 1rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
-    transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; outline: none;
-  }
-  .btn:hover { transform: scale(1.05); }
-  .btn:active { transform: scale(0.97); }
-  .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-  .btn-red { background: var(--red); color: white; box-shadow: 0 0 40px rgba(231,76,60,0.4); }
-  .btn-red:hover:not(:disabled) { box-shadow: 0 0 60px rgba(231,76,60,0.6); }
-  .btn-red.active { background: var(--red-dark); animation: pulse-red 1.5s infinite; }
-  .btn-blue { background: var(--blue); color: white; box-shadow: 0 0 40px rgba(52,152,219,0.4); }
-  .btn-blue:hover:not(:disabled) { box-shadow: 0 0 60px rgba(52,152,219,0.6); }
-  .btn-blue.active { background: var(--blue-dark); animation: pulse-blue 1.5s infinite; }
-  @keyframes pulse-red { 0%,100%{box-shadow:0 0 40px rgba(231,76,60,0.5)} 50%{box-shadow:0 0 80px rgba(231,76,60,0.9)} }
-  @keyframes pulse-blue { 0%,100%{box-shadow:0 0 40px rgba(52,152,219,0.5)} 50%{box-shadow:0 0 80px rgba(52,152,219,0.9)} }
-  .btn svg { width: 36px; height: 36px; fill: white; }
-  .btn span { font-size: 0.75rem; }
-  .room-panel {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
-    padding: 1.5rem 2rem; display: flex; flex-direction: column; gap: 1rem;
-    align-items: center; width: 100%; max-width: 480px;
-  }
-  .room-row { display: flex; gap: 0.75rem; width: 100%; align-items: center; }
-  .room-input {
-    flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
-    color: var(--text); font-size: 1.1rem; padding: 0.6rem 1rem; letter-spacing: 0.15em;
-    text-align: center; font-weight: 600; outline: none; font-family: monospace;
-  }
-  .room-input:focus { border-color: var(--blue); }
-  .btn-small {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    color: var(--muted); padding: 0.6rem 1rem; cursor: pointer; font-size: 0.85rem;
-    transition: color 0.2s, border-color 0.2s; white-space: nowrap;
-  }
-  .btn-small:hover { color: var(--text); border-color: #555; }
-  .status { font-size: 0.85rem; color: var(--muted); display: flex; align-items: center; gap: 0.5rem; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
-  .dot.connected { background: var(--green); }
-  .dot.connecting { background: #f39c12; animation: blink 1s infinite; }
-  .dot.error { background: var(--red); }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-  #viewer-overlay {
-    display: none; position: fixed; inset: 0; background: #000; z-index: 100;
-  }
-  #viewer-overlay.visible { display: block; }
-  #remote-video { width: 100%; height: 100%; object-fit: contain; display: block; cursor: crosshair; }
-  #viewer-controls {
-    position: fixed; top: 16px; right: 16px; display: flex; gap: 10px; z-index: 200;
-  }
-  .vc-btn {
-    background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
-    color: white; padding: 8px 16px; font-size: 0.8rem; cursor: pointer; transition: background 0.2s;
-  }
-  .vc-btn:hover { background: rgba(255,255,255,0.15); }
-  #hint {
-    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-    background: rgba(0,0,0,0.7); color: rgba(255,255,255,0.5); border-radius: 8px;
-    padding: 6px 14px; font-size: 0.75rem; pointer-events: none; transition: opacity 1s;
-  }
-  .log { font-family: monospace; font-size: 0.72rem; color: #444; max-width: 480px; width: 100%; text-align: left; min-height: 1.2em; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080810;--s1:#0e0e1a;--s2:#141422;--s3:#1c1c2e;
+  --border:#ffffff12;--border2:#ffffff22;
+  --text:#f0f0f8;--muted:#6b6b8a;--muted2:#9090b0;
+  --red:#ff3b3b;--red2:#cc2222;--redshadow:rgba(255,59,59,0.35);
+  --blue:#3b82f6;--blue2:#2563eb;--blueshadow:rgba(59,130,246,0.35);
+  --green:#22c55e;--amber:#f59e0b;--purple:#a855f7;
+  --radius:14px;--radius-sm:8px;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh}
+
+/* ── ÉCRAN D'ACCUEIL ── */
+#home{display:flex;flex-direction:column;align-items:center;gap:2rem;padding:2rem;width:100%;max-width:520px;transition:opacity 0.3s}
+#home.hidden{opacity:0;pointer-events:none;position:absolute}
+
+.logo{display:flex;align-items:center;gap:12px}
+.logo-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:24px;height:24px;fill:white}
+.logo-text{font-size:1.5rem;font-weight:700;letter-spacing:-0.02em}
+.logo-sub{font-size:0.75rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px}
+
+.panel{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;width:100%;display:flex;flex-direction:column;gap:1rem}
+
+.room-row{display:flex;gap:8px;align-items:center}
+.room-input{flex:1;background:var(--s1);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:1.2rem;padding:10px 14px;letter-spacing:0.2em;text-align:center;font-weight:700;outline:none;font-family:monospace;transition:border-color 0.2s}
+.room-input:focus{border-color:var(--blue)}
+.btn-ghost{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--muted2);padding:10px 14px;cursor:pointer;font-size:0.8rem;transition:all 0.2s;white-space:nowrap}
+.btn-ghost:hover{color:var(--text);border-color:var(--border2)}
+
+.status-row{display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--muted2)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background 0.3s}
+.dot.ok{background:var(--green)}
+.dot.wait{background:var(--amber);animation:blink 1s infinite}
+.dot.err{background:var(--red)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}
+
+.divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:0.75rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.big-buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.big-btn{border:none;cursor:pointer;border-radius:var(--radius);padding:1.5rem 1rem;display:flex;flex-direction:column;align-items:center;gap:10px;transition:transform 0.15s,box-shadow 0.2s;outline:none;position:relative;overflow:hidden}
+.big-btn::after{content:'';position:absolute;inset:0;background:white;opacity:0;transition:opacity 0.15s}
+.big-btn:hover::after{opacity:0.06}
+.big-btn:active{transform:scale(0.97)}
+.big-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none}
+.big-btn svg{width:32px;height:32px;fill:white}
+.big-btn span{font-size:0.85rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:white}
+.big-btn small{font-size:0.7rem;color:rgba(255,255,255,0.6);letter-spacing:0}
+
+.btn-red{background:linear-gradient(135deg,#ff3b3b,#cc2222);box-shadow:0 4px 24px var(--redshadow)}
+.btn-red:hover:not(:disabled){box-shadow:0 4px 36px rgba(255,59,59,0.55)}
+.btn-red.active{animation:pulse-r 2s infinite}
+@keyframes pulse-r{0%,100%{box-shadow:0 4px 24px var(--redshadow)}50%{box-shadow:0 4px 48px rgba(255,59,59,0.7)}}
+
+.btn-blue{background:linear-gradient(135deg,#3b82f6,#2563eb);box-shadow:0 4px 24px var(--blueshadow)}
+.btn-blue:hover:not(:disabled){box-shadow:0 4px 36px rgba(59,130,246,0.55)}
+.btn-blue.active{animation:pulse-b 2s infinite}
+@keyframes pulse-b{0%,100%{box-shadow:0 4px 24px var(--blueshadow)}50%{box-shadow:0 4px 48px rgba(59,130,246,0.7)}}
+
+.log{font-family:monospace;font-size:0.7rem;color:var(--muted);text-align:center;min-height:1em;transition:color 0.2s}
+.log.err{color:var(--red)}
+.log.ok{color:var(--green)}
+
+/* ── SESSION (plein écran) ── */
+#session{display:none;position:fixed;inset:0;background:#000;z-index:100;flex-direction:row}
+#session.visible{display:flex}
+
+#screen-wrap{flex:1;position:relative;overflow:hidden;background:#000}
+#remote-video{width:100%;height:100%;object-fit:contain;display:block}
+#local-screen{width:100%;height:100%;object-fit:contain;display:block}
+
+/* Overlay caméra */
+#cam-bubble{position:absolute;bottom:80px;right:12px;width:160px;height:120px;border-radius:12px;overflow:hidden;border:2px solid var(--border2);cursor:move;display:none;z-index:50;background:#000}
+#cam-bubble.visible{display:block}
+#cam-video{width:100%;height:100%;object-fit:cover}
+#cam-bubble .cam-close{position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.6);border:none;color:white;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+/* Barre de contrôle */
+#ctrl-bar{position:absolute;bottom:0;left:0;right:0;height:56px;background:linear-gradient(transparent,rgba(0,0,0,0.85));display:flex;align-items:center;justify-content:center;gap:8px;padding:0 12px;opacity:0;transition:opacity 0.3s;z-index:60}
+#screen-wrap:hover #ctrl-bar{opacity:1}
+#ctrl-bar.always{opacity:1}
+
+.cb{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:white;padding:6px 12px;font-size:0.75rem;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.cb:hover{background:rgba(255,255,255,0.2)}
+.cb.on{background:rgba(59,130,246,0.3);border-color:rgba(59,130,246,0.5)}
+.cb.danger{background:rgba(255,59,59,0.25);border-color:rgba(255,59,59,0.4)}
+.cb svg{width:14px;height:14px;fill:currentColor;flex-shrink:0}
+.cb-sep{width:1px;height:24px;background:rgba(255,255,255,0.15)}
+
+/* ── PANNEAU LATÉRAL (chat + participants) ── */
+#side-panel{width:0;overflow:hidden;background:var(--s1);border-left:1px solid var(--border);display:flex;flex-direction:column;transition:width 0.25s ease}
+#side-panel.open{width:280px}
+
+.sp-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.sp-title{font-size:0.85rem;font-weight:600;color:var(--muted2)}
+.sp-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;line-height:1}
+.sp-close:hover{color:var(--text)}
+
+.sp-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.sp-tab{flex:1;padding:10px;background:none;border:none;color:var(--muted);font-size:0.78rem;cursor:pointer;border-bottom:2px solid transparent;transition:color 0.2s}
+.sp-tab.active{color:var(--text);border-bottom-color:var(--blue)}
+
+.tab-content{display:none;flex:1;flex-direction:column;overflow:hidden}
+.tab-content.active{display:flex}
+
+/* Chat */
+#chat-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth}
+#chat-msgs::-webkit-scrollbar{width:4px}
+#chat-msgs::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.msg{display:flex;flex-direction:column;gap:2px}
+.msg-meta{font-size:0.65rem;color:var(--muted)}
+.msg-bubble{background:var(--s2);border-radius:10px;padding:8px 10px;font-size:0.8rem;line-height:1.4;word-break:break-word;max-width:100%;border:1px solid var(--border)}
+.msg.mine .msg-bubble{background:rgba(59,130,246,0.2);border-color:rgba(59,130,246,0.3);align-self:flex-end}
+.msg.mine{align-items:flex-end}
+.msg-system{font-size:0.72rem;color:var(--muted);text-align:center;font-style:italic}
+
+.chat-input-row{display:flex;gap:6px;padding:10px;border-top:1px solid var(--border);flex-shrink:0}
+.chat-input{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.82rem;padding:8px 10px;outline:none;resize:none;font-family:inherit;min-height:36px;max-height:80px}
+.chat-input:focus{border-color:var(--blue)}
+.chat-send{background:var(--blue);border:none;border-radius:8px;color:white;padding:8px 12px;cursor:pointer;font-size:12px;flex-shrink:0}
+.chat-send:hover{background:var(--blue2)}
+
+/* ── NOTIFICATION ── */
+#notif{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--s3);border:1px solid var(--border2);border-radius:10px;padding:10px 20px;font-size:0.82rem;color:var(--text);z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap}
+#notif.show{opacity:1}
+
+/* Icônes SVG inline */
+.icon-screen{d:path('M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM9 8l-4 4 4 4v-3h6v-2H9V8z')}
 </style>
 </head>
 <body>
 
-<h1>ScreenCast</h1>
-
-<div class="room-panel">
-  <div class="room-row">
-    <input class="room-input" id="room-id" maxlength="8" placeholder="CODE SALLE" spellcheck="false" autocomplete="off">
-    <button class="btn-small" id="gen-btn">Générer</button>
-    <button class="btn-small" id="copy-btn">Copier</button>
+<!-- ── ACCUEIL ── -->
+<div id="home">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16v10H4zm8 12v2m-3 0h6M2 6a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+    <div>
+      <div class="logo-text">ScreenCast</div>
+      <div class="logo-sub">Partage d'écran P2P</div>
+    </div>
   </div>
-  <div class="status">
-    <div class="dot" id="sdot"></div>
-    <span id="stxt">En attente</span>
+
+  <div class="panel">
+    <div class="room-row">
+      <input class="room-input" id="room-id" maxlength="8" placeholder="CODE" spellcheck="false" autocomplete="off">
+      <button class="btn-ghost" id="gen-btn">Générer</button>
+      <button class="btn-ghost" id="copy-btn">Copier</button>
+    </div>
+    <div class="status-row">
+      <div class="dot" id="sdot"></div>
+      <span id="stxt">Entrez ou générez un code salle</span>
+    </div>
+    <div class="divider">choisissez un rôle</div>
+    <div class="big-buttons">
+      <button class="big-btn btn-red" id="btn-proj">
+        <svg viewBox="0 0 24 24"><path d="M12 4L8 8h3v8h2V8h3L12 4zm-6 14v2h12v-2H6z"/></svg>
+        <span>Projeter</span>
+        <small>Partager mon écran</small>
+      </button>
+      <button class="big-btn btn-blue" id="btn-view">
+        <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zm-5-7l-4-4v3H6v2h6v3l4-4z"/></svg>
+        <span>Afficher</span>
+        <small>Voir l'écran distant</small>
+      </button>
+    </div>
+  </div>
+
+  <div class="log" id="log-home">Chargement PeerJS…</div>
+</div>
+
+<!-- ── SESSION PLEIN ÉCRAN ── -->
+<div id="session">
+  <div id="screen-wrap">
+    <video id="remote-video" autoplay playsinline style="display:none"></video>
+    <video id="local-screen" autoplay playsinline muted style="display:none"></video>
+
+    <!-- Bulle caméra -->
+    <div id="cam-bubble">
+      <video id="cam-video" autoplay playsinline muted></video>
+      <button class="cam-close" id="cam-close">✕</button>
+    </div>
+
+    <!-- Barre bas -->
+    <div id="ctrl-bar" id="ctrl-bar">
+      <!-- Projecteur -->
+      <div id="bar-proj" style="display:none;align-items:center;gap:8px;display:none">
+        <button class="cb" id="cb-cam">
+          <svg viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h12a1 1 0 001-1v-3.5l4 4v-11l-4 4z"/></svg>Caméra
+        </button>
+        <div class="cb-sep"></div>
+        <button class="cb" id="cb-chat-proj">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg>Chat
+        </button>
+        <div class="cb-sep"></div>
+        <button class="cb danger" id="cb-stop-proj">
+          <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>Arrêter
+        </button>
+      </div>
+
+      <!-- Viewer -->
+      <div id="bar-view" style="display:none;align-items:center;gap:8px">
+        <button class="cb on" id="cb-ctrl">
+          <svg viewBox="0 0 24 24"><path d="M13 1.07V9h7c0-4.08-3.05-7.44-7-7.93zM4.98 9H12V1.07C7.96 1.56 4.98 4.94 4.98 9zm-1.98 1c0 4.42 3.58 8 8 8s8-3.58 8-8H2.98z"/></svg>Contrôle: ON
+        </button>
+        <button class="cb" id="cb-cam-view">
+          <svg viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h12a1 1 0 001-1v-3.5l4 4v-11l-4 4z"/></svg>Caméra
+        </button>
+        <button class="cb" id="cb-fs">
+          <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>Plein écran
+        </button>
+        <div class="cb-sep"></div>
+        <button class="cb" id="cb-chat-view">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg>Chat
+        </button>
+        <div class="cb-sep"></div>
+        <button class="cb danger" id="cb-stop-view">
+          <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>Quitter
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panneau latéral -->
+  <div id="side-panel">
+    <div class="sp-header">
+      <span class="sp-title">Session</span>
+      <button class="sp-close" id="sp-close">✕</button>
+    </div>
+    <div class="sp-tabs">
+      <button class="sp-tab active" data-tab="chat">Chat</button>
+    </div>
+    <div class="tab-content active" id="tab-chat">
+      <div id="chat-msgs"></div>
+      <div class="chat-input-row">
+        <textarea class="chat-input" id="chat-input" placeholder="Message…" rows="1"></textarea>
+        <button class="chat-send" id="chat-send">→</button>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="buttons">
-  <button class="btn btn-red" id="btn-project">
-    <svg viewBox="0 0 24 24"><path d="M12 4L8 8h3v8h2V8h3L12 4zm-6 14v2h12v-2H6z"/></svg>
-    <span>Projeter</span>
-  </button>
-  <button class="btn btn-blue" id="btn-view">
-    <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zm-5-7l-4-4v3H6v2h6v3l4-4z"/></svg>
-    <span>Afficher</span>
-  </button>
-</div>
-
-<div class="log" id="log"></div>
-
-<div id="viewer-overlay">
-  <div id="viewer-controls">
-    <button class="vc-btn" id="toggle-ctrl">Contrôle: ON</button>
-    <button class="vc-btn" id="close-viewer">Fermer ✕</button>
-  </div>
-  <video id="remote-video" autoplay playsinline></video>
-  <div id="hint">Échap pour fermer</div>
-</div>
+<div id="notif"></div>
 
 <script>
-const ICE = [{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}];
-let peer=null, conn=null, call=null, mode=null, stream=null, ctrlOn=true;
+// ════════════════════════════════════════════════════════════
+// CONFIG & STATE
+// ════════════════════════════════════════════════════════════
+const ICE=[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun2.l.google.com:19302'}];
+let peer=null,conn=null,mediaCall=null,mode=null,screenStream=null,camStream=null;
+let ctrlEnabled=true,myName='';
 
-const $= id=>document.getElementById(id);
-const roomInput=$('room-id'), sdot=$('sdot'), stxt=$('stxt');
-const btnP=$('btn-project'), btnV=$('btn-view');
-const overlay=$('viewer-overlay'), vid=$('remote-video');
-const logEl=$('log');
+// ════════════════════════════════════════════════════════════
+// DOM
+// ════════════════════════════════════════════════════════════
+const $=id=>document.getElementById(id);
+const home=$('home'),session=$('session');
+const roomInput=$('room-id'),sdot=$('sdot'),stxt=$('stxt'),logHome=$('log-home');
+const btnProj=$('btn-proj'),btnView=$('btn-view');
+const remoteVid=$('remote-video'),localScr=$('local-screen');
+const camBubble=$('cam-bubble'),camVid=$('cam-video');
+const barProj=$('bar-proj'),barView=$('bar-view');
+const sidePanel=$('side-panel'),chatMsgs=$('chat-msgs'),chatInput=$('chat-input');
+const notifEl=$('notif');
 
-function log(m){ logEl.textContent='› '+m; console.log(m); }
-function status(t,s=''){
-  stxt.textContent=t;
-  sdot.className='dot'+(s==='ok'?' connected':s==='wait'?' connecting':s==='err'?' error':'');
-}
-function rand(n=6){ return Array.from({length:n},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.random()*32|0]).join(''); }
+// ════════════════════════════════════════════════════════════
+// UTILS
+// ════════════════════════════════════════════════════════════
+function rand(n=6){return Array.from({length:n},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.random()*32|0]).join('');}
+function status(t,s=''){stxt.textContent=t;sdot.className='dot'+(s?' '+s:'');}
+function log(m,cl=''){logHome.textContent='› '+m;logHome.className='log'+(cl?' '+cl:'');console.log('[SC]',m);}
+function notif(msg,dur=3000){notifEl.textContent=msg;notifEl.classList.add('show');clearTimeout(notifEl._t);notifEl._t=setTimeout(()=>notifEl.classList.remove('show'),dur);}
 
-$('gen-btn').onclick=()=>roomInput.value=rand();
-$('copy-btn').onclick=()=>navigator.clipboard.writeText(roomInput.value).then(()=>{
-  $('copy-btn').textContent='Copié !'; setTimeout(()=>$('copy-btn').textContent='Copier',1500);
-});
-roomInput.value=rand();
+function showHome(){home.classList.remove('hidden');session.classList.remove('visible');session.style.display='none';}
+function showSession(){home.classList.add('hidden');session.style.display='flex';session.classList.add('visible');document.documentElement.requestFullscreen?.().catch(()=>{});}
 
+// ════════════════════════════════════════════════════════════
+// PEERJS
+// ════════════════════════════════════════════════════════════
 function loadPeer(cb){
   if(window.Peer){cb();return;}
+  status('Chargement…','wait');
   const s=document.createElement('script');
   s.src='https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';
-  s.onload=cb; s.onerror=()=>status('Erreur chargement PeerJS','err');
+  s.onload=()=>{log('PeerJS prêt','ok');cb();};
+  s.onerror=()=>{status('Erreur réseau','err');log('Impossible de charger PeerJS','err');};
   document.head.appendChild(s);
 }
 
-// ── PROJECTEUR ────────────────────────────────────────────────────────────────
-btnP.onclick=async()=>{
-  if(mode){stopAll();return;}
-  const room=roomInput.value.trim().toUpperCase();
-  if(!room){status('Entre un code salle','err');return;}
-  status('Capture écran...','wait');
+loadPeer(()=>status('Prêt'));
+
+// ════════════════════════════════════════════════════════════
+// ROOM
+// ════════════════════════════════════════════════════════════
+$('gen-btn').onclick=()=>roomInput.value=rand();
+$('copy-btn').onclick=()=>{
+  if(!roomInput.value){notif('Génère un code d\'abord');return;}
+  navigator.clipboard.writeText(roomInput.value).then(()=>notif('Code copié !'));
+};
+roomInput.value=rand();
+roomInput.addEventListener('input',()=>roomInput.value=roomInput.value.toUpperCase());
+
+// ════════════════════════════════════════════════════════════
+// PROJECTEUR
+// ════════════════════════════════════════════════════════════
+btnProj.onclick=async()=>{
+  const room=roomInput.value.trim();
+  if(!room){notif('Entre un code salle');return;}
+  status('Capture écran…','wait');
   try{
-    stream=await navigator.mediaDevices.getDisplayMedia({video:{frameRate:30},audio:true});
+    screenStream=await navigator.mediaDevices.getDisplayMedia({video:{frameRate:30,width:{ideal:1920}},audio:true});
   }catch(e){status('Capture annulée','err');return;}
-  stream.getVideoTracks()[0].onended=()=>stopAll();
-  loadPeer(()=>initProj(room));
+
+  screenStream.getVideoTracks()[0].onended=()=>stopAll();
+
+  // Preview local
+  localScr.srcObject=screenStream;
+  localScr.style.display='block';
+  remoteVid.style.display='none';
+  barProj.style.display='flex';
+  barView.style.display='none';
+  myName='Projecteur';
+
+  loadPeer(()=>startProj(room));
 };
 
-function initProj(room){
-  mode='projector'; btnP.classList.add('active'); btnV.disabled=true;
-  const pid='proj-'+room;
-  peer=new Peer(pid,{host:'0.peerjs.com',port:443,secure:true,config:{iceServers:ICE}});
+function startProj(room){
+  mode='projector';
+  btnProj.classList.add('active');btnView.disabled=true;
+  showSession();
 
-  peer.on('open',id=>{
-    log('Projecteur prêt: '+id);
-    status('En attente viewer · code: '+room,'wait');
-  });
-
-  // Viewer ouvre un DataChannel → on sait qui il est → on l'appelle
+  peer=new Peer('proj-'+room,{host:'0.peerjs.com',port:443,secure:true,config:{iceServers:ICE}});
+  peer.on('open',id=>{log('ID: '+id);status('En attente viewer · '+room,'wait');notif('Code: '+room+' — partage-le au viewer');});
   peer.on('connection',c=>{
     conn=c;
-    log('Viewer connecté: '+c.peer);
     conn.on('open',()=>{
-      status('Viewer connecté, envoi flux...','wait');
-      // On appelle directement le viewer avec notre stream
-      const mc=peer.call(c.peer, stream);
-      mc.on('error',e=>log('call err: '+e));
-      call=mc;
-      log('Appel vidéo → '+c.peer);
-      status('Streaming ✓','ok');
+      status('Viewer connecté','ok');notif('Viewer connecté !');
+      addSystemMsg('Viewer connecté');
+      // Appelle le viewer avec le flux screen (+ cam si active)
+      const tracks=[...screenStream.getTracks()];
+      if(camStream) camStream.getTracks().forEach(t=>tracks.push(t));
+      const merged=new MediaStream(tracks);
+      mediaCall=peer.call(c.peer,merged);
     });
-    conn.on('data', handleCtrl);
-    conn.on('close',()=>{status('Viewer parti','wait'); log('DC fermé');});
+    conn.on('data',d=>handleData(d));
+    conn.on('close',()=>{status('Viewer déconnecté','wait');addSystemMsg('Viewer déconnecté');});
   });
-
   peer.on('error',e=>{
     const t=e.type||e.message;
-    status(t==='unavailable-id'?'Code déjà pris, génère-en un autre':'Erreur: '+t,'err');
-    log('Peer err: '+t);
+    if(t==='unavailable-id'){notif('Code déjà utilisé — génères-en un autre');stopAll();}
+    else{log('Err: '+t,'err');}
   });
 }
 
-// ── VIEWER ────────────────────────────────────────────────────────────────────
-btnV.onclick=()=>{
-  if(mode){stopAll();return;}
-  const room=roomInput.value.trim().toUpperCase();
-  if(!room){status('Entre le code salle','err');return;}
-  loadPeer(()=>initView(room));
+// ════════════════════════════════════════════════════════════
+// VIEWER
+// ════════════════════════════════════════════════════════════
+btnView.onclick=()=>{
+  const room=roomInput.value.trim();
+  if(!room){notif('Entre le code salle du projecteur');return;}
+  myName='Viewer';
+  barProj.style.display='none';
+  barView.style.display='flex';
+  localScr.style.display='none';
+  loadPeer(()=>startView(room));
 };
 
-function initView(room){
-  mode='viewer'; btnV.classList.add('active'); btnP.disabled=true;
+function startView(room){
+  mode='viewer';
+  btnView.classList.add('active');btnProj.disabled=true;
+  showSession();
+  status('Connexion…','wait');
+
   const myId='view-'+room+'-'+rand(4);
   peer=new Peer(myId,{host:'0.peerjs.com',port:443,secure:true,config:{iceServers:ICE}});
 
   peer.on('open',id=>{
-    log('Viewer ID: '+id);
-    status('Connexion au projecteur...','wait');
-    // Ouvre DataChannel vers proj-ROOM (ça déclenche peer.on('connection') côté proj)
-    conn=peer.connect('proj-'+room,{reliable:true});
-    conn.on('open',()=>{ log('DC ouvert, attente appel vidéo...'); status('Connecté, attente vidéo...','wait'); });
-    conn.on('error',e=>{ log('DC err: '+e); status('Erreur DC','err'); });
-    conn.on('close',()=>{ status('Connexion perdue','err'); hideOverlay(); });
+    log('ID: '+id);
+    conn=peer.connect('proj-'+room,{reliable:true,serialization:'json'});
+    conn.on('open',()=>{status('Connecté, attente vidéo…','wait');});
+    conn.on('data',d=>handleData(d));
+    conn.on('error',e=>{log('DC err: '+e,'err');});
+    conn.on('close',()=>{status('Connexion perdue','err');notif('Connexion perdue');});
   });
 
-  // Le projecteur nous appelle avec son flux vidéo
   peer.on('call',c=>{
-    log('Appel vidéo reçu du projecteur !');
-    call=c;
-    call.answer(); // Pas de flux à envoyer
-    call.on('stream',s=>{
-      log('Flux reçu ✓');
-      vid.srcObject=s;
-      vid.play().catch(()=>{});
-      showOverlay();
-      status('Affichage en cours ✓','ok');
+    log('Appel vidéo reçu !');
+    // Répondre avec stream cam si dispo, sinon vide
+    const ans = camStream || new MediaStream();
+    c.answer(ans);
+    c.on('stream',s=>{
+      remoteVid.srcObject=s;
+      remoteVid.style.display='block';
+      remoteVid.play().catch(()=>{});
+      status('Réception ✓','ok');
+      notif('Écran reçu — contrôle actif');
+      setupViewerCtrl();
     });
-    call.on('error',e=>{ log('call err: '+e); status('Erreur vidéo','err'); });
+    mediaCall=c;
   });
 
   peer.on('error',e=>{
     const t=e.type||e.message;
-    status(t==='peer-unavailable'?'Projecteur introuvable — vérifie le code':'Erreur: '+t,'err');
-    log('Peer err: '+t);
+    if(t==='peer-unavailable'){notif('Projecteur introuvable — vérifie le code');stopAll();}
+    else log('Err: '+t,'err');
   });
 }
 
-// ── OVERLAY + CONTRÔLE ────────────────────────────────────────────────────────
-function showOverlay(){ overlay.classList.add('visible'); setupCtrl(); setTimeout(()=>$('hint').style.opacity='0',4000); }
-function hideOverlay(){ overlay.classList.remove('visible'); removeCtrl(); }
+// ════════════════════════════════════════════════════════════
+// CONTRÔLE SOURIS + CLAVIER (viewer → projecteur)
+// ════════════════════════════════════════════════════════════
+function send(d){if(conn&&conn.open)try{conn.send(d);}catch(e){}}
 
-$('close-viewer').onclick=()=>stopAll();
-$('toggle-ctrl').onclick=()=>{ ctrlOn=!ctrlOn; $('toggle-ctrl').textContent='Contrôle: '+(ctrlOn?'ON':'OFF'); };
+let lastT=0;
 
-function send(d){ if(conn&&conn.open) conn.send(d); }
-
-let lt=0;
-function pos(e){
-  const r=vid.getBoundingClientRect();
-  const vw=vid.videoWidth||1920, vh=vid.videoHeight||1080;
+function getPos(e){
+  const r=remoteVid.getBoundingClientRect();
+  const vw=remoteVid.videoWidth||1920,vh=remoteVid.videoHeight||1080;
   const sc=Math.min(r.width/vw,r.height/vh);
-  const ox=(r.width-vw*sc)/2, oy=(r.height-vh*sc)/2;
-  return {x:Math.max(0,Math.min(1,(e.clientX-r.left-ox)/(vw*sc))),
-          y:Math.max(0,Math.min(1,(e.clientY-r.top-oy)/(vh*sc)))};
+  const ox=(r.width-vw*sc)/2,oy=(r.height-vh*sc)/2;
+  return{
+    x:+(Math.max(0,Math.min(1,(e.clientX-r.left-ox)/(vw*sc)))).toFixed(5),
+    y:+(Math.max(0,Math.min(1,(e.clientY-r.top-oy)/(vh*sc)))).toFixed(5)
+  };
 }
 
-const eMove=e=>{if(!ctrlOn)return; const n=Date.now();if(n-lt<16)return;lt=n;const p=pos(e);send({type:'mousemove',x:p.x,y:p.y});};
-const eDown=e=>{if(!ctrlOn)return;const p=pos(e);send({type:'mousedown',x:p.x,y:p.y,b:e.button});};
-const eUp  =e=>{if(!ctrlOn)return;const p=pos(e);send({type:'mouseup',x:p.x,y:p.y,b:e.button});};
-const eWheel=e=>{if(!ctrlOn)return;e.preventDefault();send({type:'wheel',dx:e.deltaX,dy:e.deltaY});};
-const eKD  =e=>{if(!ctrlOn)return;if(e.key==='Escape'){stopAll();return;}e.preventDefault();send({type:'keydown',key:e.key,code:e.code,ctrl:e.ctrlKey,shift:e.shiftKey,alt:e.altKey,meta:e.metaKey});};
-const eKU  =e=>{if(!ctrlOn)return;send({type:'keyup',key:e.key,code:e.code});};
-
-function setupCtrl(){
-  vid.addEventListener('mousemove',eMove);
-  vid.addEventListener('mousedown',eDown);
-  vid.addEventListener('mouseup',eUp);
-  vid.addEventListener('wheel',eWheel,{passive:false});
-  vid.addEventListener('contextmenu',e=>e.preventDefault());
-  document.addEventListener('keydown',eKD);
-  document.addEventListener('keyup',eKU);
+function setupViewerCtrl(){
+  remoteVid.addEventListener('mousemove',evMove);
+  remoteVid.addEventListener('mousedown',evDown);
+  remoteVid.addEventListener('mouseup',evUp);
+  remoteVid.addEventListener('dblclick',evDbl);
+  remoteVid.addEventListener('wheel',evWheel,{passive:false});
+  remoteVid.addEventListener('contextmenu',e=>e.preventDefault());
+  document.addEventListener('keydown',evKD);
+  document.addEventListener('keyup',evKU);
 }
-function removeCtrl(){
-  vid.removeEventListener('mousemove',eMove);
-  vid.removeEventListener('mousedown',eDown);
-  vid.removeEventListener('mouseup',eUp);
-  vid.removeEventListener('wheel',eWheel);
-  document.removeEventListener('keydown',eKD);
-  document.removeEventListener('keyup',eKU);
+function teardownViewerCtrl(){
+  remoteVid.removeEventListener('mousemove',evMove);
+  remoteVid.removeEventListener('mousedown',evDown);
+  remoteVid.removeEventListener('mouseup',evUp);
+  remoteVid.removeEventListener('dblclick',evDbl);
+  remoteVid.removeEventListener('wheel',evWheel);
+  document.removeEventListener('keydown',evKD);
+  document.removeEventListener('keyup',evKU);
 }
 
-function handleCtrl(d){
-  if(!d||!d.type) return;
-  if(d.type==='mousemove'){
-    let c=document.getElementById('pc');
-    if(!c){c=document.createElement('div');c.id='pc';c.style.cssText='position:fixed;width:14px;height:14px;border-radius:50%;background:rgba(52,152,219,0.8);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);';document.body.appendChild(c);}
-    c.style.left=(d.x*100)+'vw'; c.style.top=(d.y*100)+'vh';
+function evMove(e){
+  if(!ctrlEnabled)return;
+  const n=Date.now();if(n-lastT<16)return;lastT=n;
+  const p=getPos(e);send({t:'mm',x:p.x,y:p.y});
+}
+function evDown(e){
+  if(!ctrlEnabled)return;
+  if(e.target===chatInput)return;
+  const p=getPos(e);send({t:'md',x:p.x,y:p.y,b:e.button});
+}
+function evUp(e){
+  if(!ctrlEnabled)return;
+  const p=getPos(e);send({t:'mu',x:p.x,y:p.y,b:e.button});
+}
+function evDbl(e){
+  if(!ctrlEnabled)return;
+  const p=getPos(e);send({t:'dc',x:p.x,y:p.y});
+}
+function evWheel(e){
+  if(!ctrlEnabled)return;
+  if(e.target===chatInput||e.target.closest('#side-panel'))return;
+  e.preventDefault();
+  send({t:'wh',dx:Math.round(e.deltaX),dy:Math.round(e.deltaY)});
+}
+function evKD(e){
+  if(!ctrlEnabled)return;
+  if(e.target===chatInput)return;
+  // Escape = quitter
+  if(e.key==='Escape'){stopAll();return;}
+  e.preventDefault();
+  send({t:'kd',k:e.key,c:e.code,ctrl:e.ctrlKey,sh:e.shiftKey,alt:e.altKey,meta:e.metaKey});
+}
+function evKU(e){
+  if(!ctrlEnabled)return;
+  if(e.target===chatInput)return;
+  send({t:'ku',k:e.key,c:e.code});
+}
+
+// ════════════════════════════════════════════════════════════
+// RÉCEPTION DES ÉVÉNEMENTS (côté projecteur)
+// ════════════════════════════════════════════════════════════
+// Note: dans un navigateur pur, on ne peut pas déplacer la vraie souris de l'OS.
+// On affiche un curseur fantôme et on dispatche les événements sur l'élément sous le curseur.
+// Pour un contrôle OS réel → version Electron avec robotjs.
+
+let ghostCursor=null;
+function getGhost(){
+  if(!ghostCursor){
+    ghostCursor=document.createElement('div');
+    ghostCursor.style.cssText='position:fixed;width:16px;height:16px;border-radius:50%;background:rgba(59,130,246,0.85);pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:left 40ms linear,top 40ms linear;box-shadow:0 0 8px rgba(59,130,246,0.6)';
+    document.body.appendChild(ghostCursor);
+  }
+  return ghostCursor;
+}
+
+function applyCtrl(d){
+  const sw=window.innerWidth,sh=window.innerHeight;
+  switch(d.t){
+    case 'mm':{
+      const x=d.x*sw,y=d.y*sh;
+      const g=getGhost();g.style.left=x+'px';g.style.top=y+'px';
+      // Dispatch mousemove sur l'élément cible réel
+      const el=document.elementFromPoint(x,y);
+      if(el) el.dispatchEvent(new MouseEvent('mousemove',{bubbles:true,clientX:x,clientY:y}));
+      break;
+    }
+    case 'md':{
+      const x=d.x*sw,y=d.y*sh;
+      const el=document.elementFromPoint(x,y);
+      if(el){el.focus();el.dispatchEvent(new MouseEvent('mousedown',{bubbles:true,button:d.b,clientX:x,clientY:y}));}
+      break;
+    }
+    case 'mu':{
+      const x=d.x*sw,y=d.y*sh;
+      const el=document.elementFromPoint(x,y);
+      if(el){el.dispatchEvent(new MouseEvent('mouseup',{bubbles:true,button:d.b,clientX:x,clientY:y}));el.dispatchEvent(new MouseEvent('click',{bubbles:true,button:d.b,clientX:x,clientY:y}));}
+      break;
+    }
+    case 'dc':{
+      const x=d.x*sw,y=d.y*sh;
+      const el=document.elementFromPoint(x,y);
+      if(el) el.dispatchEvent(new MouseEvent('dblclick',{bubbles:true,clientX:x,clientY:y}));
+      break;
+    }
+    case 'wh':{
+      const x=ghostCursor?parseFloat(ghostCursor.style.left):sw/2;
+      const y=ghostCursor?parseFloat(ghostCursor.style.top):sh/2;
+      const el=document.elementFromPoint(x,y);
+      if(el) el.dispatchEvent(new WheelEvent('wheel',{bubbles:true,deltaX:d.dx,deltaY:d.dy,deltaMode:0}));
+      break;
+    }
+    case 'kd':{
+      const active=document.activeElement||document.body;
+      const ev=new KeyboardEvent('keydown',{bubbles:true,key:d.k,code:d.c,ctrlKey:d.ctrl,shiftKey:d.sh,altKey:d.alt,metaKey:d.meta});
+      active.dispatchEvent(ev);
+      // Insertion de texte si champ éditable
+      if(!ev.defaultPrevented && d.k.length===1 && !d.ctrl && !d.alt && !d.meta){
+        if(active.tagName==='INPUT'||active.tagName==='TEXTAREA'||active.isContentEditable){
+          const s=active.selectionStart??active.value?.length??0;
+          const e2=active.selectionEnd??s;
+          if(active.value!==undefined){
+            active.value=active.value.slice(0,s)+d.k+active.value.slice(e2);
+            active.selectionStart=active.selectionEnd=s+1;
+            active.dispatchEvent(new Event('input',{bubbles:true}));
+          }
+        }
+      }
+      if(d.k==='Backspace'){
+        if(active.value!==undefined){
+          const s=active.selectionStart??active.value.length;
+          if(s>0){active.value=active.value.slice(0,s-1)+active.value.slice(s);active.selectionStart=active.selectionEnd=s-1;active.dispatchEvent(new Event('input',{bubbles:true}));}
+        }
+      }
+      if(d.k==='Tab'){
+        const focusable='input,textarea,button,a,select,[tabindex]';
+        const els=[...document.querySelectorAll(focusable)].filter(e=>!e.disabled&&e.tabIndex>=0);
+        const idx=els.indexOf(active);
+        if(idx>=0) els[(idx+(d.sh?-1:1)+els.length)%els.length].focus();
+      }
+      break;
+    }
+    case 'ku':{
+      const active=document.activeElement||document.body;
+      active.dispatchEvent(new KeyboardEvent('keyup',{bubbles:true,key:d.k,code:d.c}));
+      break;
+    }
   }
 }
 
-// ── STOP ──────────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════
+// CHAT
+// ════════════════════════════════════════════════════════════
+function addMsg(text,mine=false,from=''){
+  const wrap=document.createElement('div');
+  wrap.className='msg'+(mine?' mine':'');
+  if(from&&!mine){const m=document.createElement('div');m.className='msg-meta';m.textContent=from;wrap.appendChild(m);}
+  const b=document.createElement('div');b.className='msg-bubble';b.textContent=text;
+  wrap.appendChild(b);
+  chatMsgs.appendChild(wrap);
+  chatMsgs.scrollTop=chatMsgs.scrollHeight;
+}
+function addSystemMsg(t){const d=document.createElement('div');d.className='msg-system';d.textContent=t;chatMsgs.appendChild(d);chatMsgs.scrollTop=chatMsgs.scrollHeight;}
+
+function sendMsg(){
+  const txt=chatInput.value.trim();
+  if(!txt)return;
+  addMsg(txt,true);
+  send({t:'chat',msg:txt,from:myName});
+  chatInput.value='';
+}
+$('chat-send').onclick=sendMsg;
+chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
+
+// ════════════════════════════════════════════════════════════
+// HANDLEDATA (réception unifiée)
+// ════════════════════════════════════════════════════════════
+function handleData(d){
+  if(!d||!d.t)return;
+  if(d.t==='chat'){addMsg(d.msg,false,d.from||'Distant');notif('💬 '+d.msg.slice(0,40));return;}
+  if(mode==='projector') applyCtrl(d);
+}
+
+// ════════════════════════════════════════════════════════════
+// CAMÉRA
+// ════════════════════════════════════════════════════════════
+async function toggleCam(btn){
+  if(camStream){
+    camStream.getTracks().forEach(t=>t.stop());
+    camStream=null;
+    camBubble.classList.remove('visible');
+    btn.classList.remove('on');
+    return;
+  }
+  try{
+    camStream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});
+    camVid.srcObject=camStream;
+    camBubble.classList.add('visible');
+    btn.classList.add('on');
+  }catch(e){notif('Caméra inaccessible');}
+}
+$('cb-cam').onclick=()=>toggleCam($('cb-cam'));
+$('cb-cam-view').onclick=()=>toggleCam($('cb-cam-view'));
+$('cam-close').onclick=()=>{ if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;} camBubble.classList.remove('visible'); };
+
+// Drag bulle caméra
+(()=>{
+  let ox=0,oy=0,dragging=false;
+  camBubble.addEventListener('mousedown',e=>{if(e.target.classList.contains('cam-close'))return;dragging=true;ox=e.clientX-camBubble.offsetLeft;oy=e.clientY-camBubble.offsetTop;});
+  document.addEventListener('mousemove',e=>{if(!dragging)return;camBubble.style.left=(e.clientX-ox)+'px';camBubble.style.top=(e.clientY-oy)+'px';camBubble.style.right='auto';camBubble.style.bottom='auto';});
+  document.addEventListener('mouseup',()=>dragging=false);
+})();
+
+// ════════════════════════════════════════════════════════════
+// PANNEAU + TABS
+// ════════════════════════════════════════════════════════════
+function toggleSide(){sidePanel.classList.toggle('open');}
+$('cb-chat-proj').onclick=toggleSide;
+$('cb-chat-view').onclick=toggleSide;
+$('sp-close').onclick=()=>sidePanel.classList.remove('open');
+
+// ════════════════════════════════════════════════════════════
+// PLEIN ÉCRAN + CONTRÔLE
+// ════════════════════════════════════════════════════════════
+$('cb-fs').onclick=()=>{
+  if(document.fullscreenElement) document.exitFullscreen();
+  else document.documentElement.requestFullscreen?.();
+};
+$('cb-ctrl').onclick=()=>{
+  ctrlEnabled=!ctrlEnabled;
+  $('cb-ctrl').textContent=ctrlEnabled?'Contrôle: ON':'Contrôle: OFF';
+  $('cb-ctrl').classList.toggle('on',ctrlEnabled);
+  remoteVid.style.cursor=ctrlEnabled?'crosshair':'default';
+};
+$('cb-stop-proj').onclick=stopAll;
+$('cb-stop-view').onclick=stopAll;
+
+// ════════════════════════════════════════════════════════════
+// STOP
+// ════════════════════════════════════════════════════════════
 function stopAll(){
-  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
-  try{if(call)call.close();}catch(e){}call=null;
+  teardownViewerCtrl();
+  if(screenStream){screenStream.getTracks().forEach(t=>t.stop());screenStream=null;}
+  if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
+  try{if(mediaCall)mediaCall.close();}catch(e){}mediaCall=null;
   try{if(conn)conn.close();}catch(e){}conn=null;
   try{if(peer)peer.destroy();}catch(e){}peer=null;
   mode=null;
-  btnP.classList.remove('active');btnV.classList.remove('active');
-  btnP.disabled=false;btnV.disabled=false;
-  hideOverlay(); vid.srcObject=null;
-  const c=document.getElementById('pc');if(c)c.remove();
-  status('Déconnecté'); log('');
+  btnProj.classList.remove('active');btnView.classList.remove('active');
+  btnProj.disabled=false;btnView.disabled=false;
+  remoteVid.srcObject=null;localScr.srcObject=null;
+  remoteVid.style.display='none';localScr.style.display='none';
+  camBubble.classList.remove('visible');
+  if(ghostCursor){ghostCursor.remove();ghostCursor=null;}
+  sidePanel.classList.remove('open');
+  chatMsgs.innerHTML='';
+  if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+  showHome();
+  status('Déconnecté');
 }
 
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mode==='viewer')stopAll();});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&mode==='viewer'&&!ctrlEnabled) stopAll();
+});
 </script>
 </body>
 </html>
