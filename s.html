@@ -6,233 +6,84 @@
 <title>ScreenCast</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #0f0f0f;
-    --surface: #1a1a1a;
-    --border: #2a2a2a;
-    --text: #f0f0f0;
-    --muted: #888;
-    --red: #e74c3c;
-    --red-dark: #c0392b;
-    --blue: #3498db;
-    --blue-dark: #2980b9;
+    --bg: #0f0f0f; --surface: #1a1a1a; --border: #2a2a2a;
+    --text: #f0f0f0; --muted: #888;
+    --red: #e74c3c; --red-dark: #c0392b;
+    --blue: #3498db; --blue-dark: #2980b9;
     --green: #2ecc71;
   }
-
   body {
-    background: var(--bg);
-    color: var(--text);
+    background: var(--bg); color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2rem;
-    padding: 2rem;
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 2rem; padding: 2rem;
     user-select: none;
   }
-
-  h1 {
-    font-size: 1.4rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  .buttons {
-    display: flex;
-    gap: 2rem;
-    align-items: center;
-    justify-content: center;
-  }
-
+  h1 { font-size: 1.4rem; font-weight: 600; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
+  .buttons { display: flex; gap: 2rem; align-items: center; justify-content: center; }
   .btn {
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    width: 140px; height: 140px; border-radius: 50%; border: none; cursor: pointer;
+    font-size: 1rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
     transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    outline: none;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; outline: none;
   }
-
   .btn:hover { transform: scale(1.05); }
   .btn:active { transform: scale(0.97); }
   .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-
-  .btn-red {
-    background: var(--red);
-    color: white;
-    box-shadow: 0 0 40px rgba(231,76,60,0.4);
-  }
-  .btn-red:hover { box-shadow: 0 0 60px rgba(231,76,60,0.6); }
+  .btn-red { background: var(--red); color: white; box-shadow: 0 0 40px rgba(231,76,60,0.4); }
+  .btn-red:hover:not(:disabled) { box-shadow: 0 0 60px rgba(231,76,60,0.6); }
   .btn-red.active { background: var(--red-dark); animation: pulse-red 1.5s infinite; }
-
-  .btn-blue {
-    background: var(--blue);
-    color: white;
-    box-shadow: 0 0 40px rgba(52,152,219,0.4);
-  }
-  .btn-blue:hover { box-shadow: 0 0 60px rgba(52,152,219,0.6); }
+  .btn-blue { background: var(--blue); color: white; box-shadow: 0 0 40px rgba(52,152,219,0.4); }
+  .btn-blue:hover:not(:disabled) { box-shadow: 0 0 60px rgba(52,152,219,0.6); }
   .btn-blue.active { background: var(--blue-dark); animation: pulse-blue 1.5s infinite; }
-
-  @keyframes pulse-red {
-    0%, 100% { box-shadow: 0 0 40px rgba(231,76,60,0.5); }
-    50% { box-shadow: 0 0 80px rgba(231,76,60,0.9); }
-  }
-  @keyframes pulse-blue {
-    0%, 100% { box-shadow: 0 0 40px rgba(52,152,219,0.5); }
-    50% { box-shadow: 0 0 80px rgba(52,152,219,0.9); }
-  }
-
+  @keyframes pulse-red { 0%,100%{box-shadow:0 0 40px rgba(231,76,60,0.5)} 50%{box-shadow:0 0 80px rgba(231,76,60,0.9)} }
+  @keyframes pulse-blue { 0%,100%{box-shadow:0 0 40px rgba(52,152,219,0.5)} 50%{box-shadow:0 0 80px rgba(52,152,219,0.9)} }
   .btn svg { width: 36px; height: 36px; fill: white; }
   .btn span { font-size: 0.75rem; }
-
   .room-panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    align-items: center;
-    width: 100%;
-    max-width: 480px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 1.5rem 2rem; display: flex; flex-direction: column; gap: 1rem;
+    align-items: center; width: 100%; max-width: 480px;
   }
-
-  .room-row {
-    display: flex;
-    gap: 0.75rem;
-    width: 100%;
-    align-items: center;
-  }
-
+  .room-row { display: flex; gap: 0.75rem; width: 100%; align-items: center; }
   .room-input {
-    flex: 1;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    font-size: 1.1rem;
-    padding: 0.6rem 1rem;
-    letter-spacing: 0.15em;
-    text-align: center;
-    font-weight: 600;
-    outline: none;
-    font-family: monospace;
+    flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+    color: var(--text); font-size: 1.1rem; padding: 0.6rem 1rem; letter-spacing: 0.15em;
+    text-align: center; font-weight: 600; outline: none; font-family: monospace;
   }
   .room-input:focus { border-color: var(--blue); }
-
   .btn-small {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--muted);
-    padding: 0.6rem 1rem;
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: color 0.2s, border-color 0.2s;
-    white-space: nowrap;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    color: var(--muted); padding: 0.6rem 1rem; cursor: pointer; font-size: 0.85rem;
+    transition: color 0.2s, border-color 0.2s; white-space: nowrap;
   }
   .btn-small:hover { color: var(--text); border-color: #555; }
-
-  .status {
-    font-size: 0.85rem;
-    color: var(--muted);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--muted);
-    flex-shrink: 0;
-  }
+  .status { font-size: 0.85rem; color: var(--muted); display: flex; align-items: center; gap: 0.5rem; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
   .dot.connected { background: var(--green); }
   .dot.connecting { background: #f39c12; animation: blink 1s infinite; }
   .dot.error { background: var(--red); }
-
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-  /* Viewer overlay */
   #viewer-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: #000;
-    z-index: 100;
-    flex-direction: column;
+    display: none; position: fixed; inset: 0; background: #000; z-index: 100;
   }
-  #viewer-overlay.visible { display: flex; }
-
-  #remote-video {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-    cursor: none;
-  }
-
+  #viewer-overlay.visible { display: block; }
+  #remote-video { width: 100%; height: 100%; object-fit: contain; display: block; cursor: crosshair; }
   #viewer-controls {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    display: flex;
-    gap: 10px;
-    z-index: 200;
+    position: fixed; top: 16px; right: 16px; display: flex; gap: 10px; z-index: 200;
   }
-
   .vc-btn {
-    background: rgba(0,0,0,0.7);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 8px;
-    color: white;
-    padding: 8px 16px;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: background 0.2s;
+    background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
+    color: white; padding: 8px 16px; font-size: 0.8rem; cursor: pointer; transition: background 0.2s;
   }
   .vc-btn:hover { background: rgba(255,255,255,0.15); }
-
-  .remote-cursor {
-    position: fixed;
-    width: 18px;
-    height: 18px;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-2px, -2px);
+  #hint {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.7); color: rgba(255,255,255,0.5); border-radius: 8px;
+    padding: 6px 14px; font-size: 0.75rem; pointer-events: none; transition: opacity 1s;
   }
-
-  #fullscreen-hint {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.7);
-    color: rgba(255,255,255,0.5);
-    border-radius: 8px;
-    padding: 6px 14px;
-    font-size: 0.75rem;
-    pointer-events: none;
-    opacity: 1;
-    transition: opacity 1s;
-  }
+  .log { font-family: monospace; font-size: 0.72rem; color: #444; max-width: 480px; width: 100%; text-align: left; min-height: 1.2em; }
 </style>
 </head>
 <body>
@@ -241,383 +92,229 @@
 
 <div class="room-panel">
   <div class="room-row">
-    <input class="room-input" id="room-id" value="" maxlength="8" placeholder="CODE SALLE" spellcheck="false" autocomplete="off">
+    <input class="room-input" id="room-id" maxlength="8" placeholder="CODE SALLE" spellcheck="false" autocomplete="off">
     <button class="btn-small" id="gen-btn">Générer</button>
     <button class="btn-small" id="copy-btn">Copier</button>
   </div>
   <div class="status">
-    <div class="dot" id="status-dot"></div>
-    <span id="status-text">En attente</span>
+    <div class="dot" id="sdot"></div>
+    <span id="stxt">En attente</span>
   </div>
 </div>
 
 <div class="buttons">
-  <button class="btn btn-red" id="btn-project" title="Projeter mon écran">
+  <button class="btn btn-red" id="btn-project">
     <svg viewBox="0 0 24 24"><path d="M12 4L8 8h3v8h2V8h3L12 4zm-6 14v2h12v-2H6z"/></svg>
     <span>Projeter</span>
   </button>
-
-  <button class="btn btn-blue" id="btn-view" title="Afficher l'écran distant">
+  <button class="btn btn-blue" id="btn-view">
     <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zm-5-7l-4-4v3H6v2h6v3l4-4z"/></svg>
     <span>Afficher</span>
   </button>
 </div>
 
-<!-- Viewer fullscreen overlay -->
+<div class="log" id="log"></div>
+
 <div id="viewer-overlay">
   <div id="viewer-controls">
-    <button class="vc-btn" id="toggle-control">Contrôle: ON</button>
+    <button class="vc-btn" id="toggle-ctrl">Contrôle: ON</button>
     <button class="vc-btn" id="close-viewer">Fermer ✕</button>
   </div>
   <video id="remote-video" autoplay playsinline></video>
-  <svg class="remote-cursor" id="remote-cursor" viewBox="0 0 18 18" style="display:none">
-    <path d="M0 0L0 16L4.5 12L7 18L9 17L6.5 11L12 11Z" fill="white" stroke="black" stroke-width="1"/>
-  </svg>
-  <div id="fullscreen-hint">Appuie sur Échap pour fermer</div>
+  <div id="hint">Échap pour fermer</div>
 </div>
 
 <script>
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
-// Serveur de signalement public gratuit (WebSocket echo/relay)
-// On utilise PeerJS (bibliothèque WebRTC) via CDN pour simplifier la signalisation
-const PEERJS_HOST = '0.peerjs.com';
-const PEERJS_PORT = 443;
+const ICE = [{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}];
+let peer=null, conn=null, call=null, mode=null, stream=null, ctrlOn=true;
 
-const ICE_SERVERS = [
-  { urls: 'stun:stun.l.google.com:19302' },
-  { urls: 'stun:stun1.l.google.com:19302' },
-  { urls: 'stun:stun.services.mozilla.com' },
-];
+const $= id=>document.getElementById(id);
+const roomInput=$('room-id'), sdot=$('sdot'), stxt=$('stxt');
+const btnP=$('btn-project'), btnV=$('btn-view');
+const overlay=$('viewer-overlay'), vid=$('remote-video');
+const logEl=$('log');
 
-// ─── STATE ────────────────────────────────────────────────────────────────────
-let peer = null;
-let conn = null;       // DataChannel (contrôle)
-let call = null;       // MediaConnection (vidéo)
-let mode = null;       // 'projector' | 'viewer'
-let controlEnabled = true;
-let localStream = null;
-
-// ─── DOM ──────────────────────────────────────────────────────────────────────
-const roomInput   = document.getElementById('room-id');
-const genBtn      = document.getElementById('gen-btn');
-const copyBtn     = document.getElementById('copy-btn');
-const statusDot   = document.getElementById('status-dot');
-const statusText  = document.getElementById('status-text');
-const btnProject  = document.getElementById('btn-project');
-const btnView     = document.getElementById('btn-view');
-const overlay     = document.getElementById('viewer-overlay');
-const remoteVideo = document.getElementById('remote-video');
-const toggleCtrl  = document.getElementById('toggle-control');
-const closeViewer = document.getElementById('close-viewer');
-const remoteCursor= document.getElementById('remote-cursor');
-const hint        = document.getElementById('fullscreen-hint');
-
-// ─── UTILS ────────────────────────────────────────────────────────────────────
-function randCode(n=6) {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  return Array.from({length:n}, ()=>chars[Math.random()*chars.length|0]).join('');
+function log(m){ logEl.textContent='› '+m; console.log(m); }
+function status(t,s=''){
+  stxt.textContent=t;
+  sdot.className='dot'+(s==='ok'?' connected':s==='wait'?' connecting':s==='err'?' error':'');
 }
+function rand(n=6){ return Array.from({length:n},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.random()*32|0]).join(''); }
 
-function setStatus(text, state='idle') {
-  statusText.textContent = text;
-  statusDot.className = 'dot';
-  if (state === 'ok') statusDot.classList.add('connected');
-  else if (state === 'wait') statusDot.classList.add('connecting');
-  else if (state === 'err') statusDot.classList.add('error');
-}
+$('gen-btn').onclick=()=>roomInput.value=rand();
+$('copy-btn').onclick=()=>navigator.clipboard.writeText(roomInput.value).then(()=>{
+  $('copy-btn').textContent='Copié !'; setTimeout(()=>$('copy-btn').textContent='Copier',1500);
+});
+roomInput.value=rand();
 
-function loadPeerJS(cb) {
-  if (window.Peer) { cb(); return; }
-  const s = document.createElement('script');
-  s.src = 'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';
-  s.onload = cb;
-  s.onerror = () => setStatus('Erreur chargement PeerJS', 'err');
+function loadPeer(cb){
+  if(window.Peer){cb();return;}
+  const s=document.createElement('script');
+  s.src='https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';
+  s.onload=cb; s.onerror=()=>status('Erreur chargement PeerJS','err');
   document.head.appendChild(s);
 }
 
-// ─── ROOM ─────────────────────────────────────────────────────────────────────
-genBtn.onclick = () => {
-  roomInput.value = randCode();
+// ── PROJECTEUR ────────────────────────────────────────────────────────────────
+btnP.onclick=async()=>{
+  if(mode){stopAll();return;}
+  const room=roomInput.value.trim().toUpperCase();
+  if(!room){status('Entre un code salle','err');return;}
+  status('Capture écran...','wait');
+  try{
+    stream=await navigator.mediaDevices.getDisplayMedia({video:{frameRate:30},audio:true});
+  }catch(e){status('Capture annulée','err');return;}
+  stream.getVideoTracks()[0].onended=()=>stopAll();
+  loadPeer(()=>initProj(room));
 };
 
-copyBtn.onclick = () => {
-  navigator.clipboard.writeText(roomInput.value).then(()=>{
-    copyBtn.textContent = 'Copié !';
-    setTimeout(()=>copyBtn.textContent='Copier', 1500);
+function initProj(room){
+  mode='projector'; btnP.classList.add('active'); btnV.disabled=true;
+  const pid='proj-'+room;
+  peer=new Peer(pid,{host:'0.peerjs.com',port:443,secure:true,config:{iceServers:ICE}});
+
+  peer.on('open',id=>{
+    log('Projecteur prêt: '+id);
+    status('En attente viewer · code: '+room,'wait');
   });
-};
 
-// Génère un code au démarrage
-roomInput.value = randCode();
-
-// ─── PROJECTOR MODE (rouge) ───────────────────────────────────────────────────
-btnProject.onclick = async () => {
-  if (mode === 'projector') { stopAll(); return; }
-  const room = roomInput.value.trim().toUpperCase();
-  if (!room) { setStatus('Entre un code salle', 'err'); return; }
-
-  setStatus('Capture écran...', 'wait');
-  try {
-    localStream = await navigator.mediaDevices.getDisplayMedia({
-      video: { frameRate: 30, width: { ideal: 1920 }, height: { ideal: 1080 } },
-      audio: true
+  // Viewer ouvre un DataChannel → on sait qui il est → on l'appelle
+  peer.on('connection',c=>{
+    conn=c;
+    log('Viewer connecté: '+c.peer);
+    conn.on('open',()=>{
+      status('Viewer connecté, envoi flux...','wait');
+      // On appelle directement le viewer avec notre stream
+      const mc=peer.call(c.peer, stream);
+      mc.on('error',e=>log('call err: '+e));
+      call=mc;
+      log('Appel vidéo → '+c.peer);
+      status('Streaming ✓','ok');
     });
-  } catch(e) {
-    setStatus('Capture annulée', 'err');
-    return;
-  }
-
-  localStream.getVideoTracks()[0].onended = () => stopAll();
-
-  loadPeerJS(() => initProjector(room));
-};
-
-function initProjector(room) {
-  setStatus('Connexion au serveur...', 'wait');
-  mode = 'projector';
-  btnProject.classList.add('active');
-  btnView.disabled = true;
-
-  peer = new Peer('proj-' + room, {
-    host: PEERJS_HOST,
-    port: PEERJS_PORT,
-    secure: true,
-    config: { iceServers: ICE_SERVERS }
+    conn.on('data', handleCtrl);
+    conn.on('close',()=>{status('Viewer parti','wait'); log('DC fermé');});
   });
 
-  peer.on('open', (id) => {
-    setStatus('En attente du viewer — code: ' + room, 'wait');
-  });
-
-  peer.on('connection', (c) => {
-    conn = c;
-    conn.on('open', () => setStatus('Viewer connecté', 'ok'));
-    conn.on('data', handleControlEvent);
-    conn.on('close', () => setStatus('Viewer déconnecté', 'wait'));
-  });
-
-  peer.on('call', (c) => {
-    call = c;
-    call.answer(localStream);
-    setStatus('Streaming en cours', 'ok');
-  });
-
-  peer.on('error', (e) => {
-    setStatus('Erreur: ' + (e.type || e.message), 'err');
+  peer.on('error',e=>{
+    const t=e.type||e.message;
+    status(t==='unavailable-id'?'Code déjà pris, génère-en un autre':'Erreur: '+t,'err');
+    log('Peer err: '+t);
   });
 }
 
-// ─── VIEWER MODE (bleu) ───────────────────────────────────────────────────────
-btnView.onclick = () => {
-  if (mode === 'viewer') { stopAll(); return; }
-  const room = roomInput.value.trim().toUpperCase();
-  if (!room) { setStatus('Entre le code salle du projecteur', 'err'); return; }
-
-  loadPeerJS(() => initViewer(room));
+// ── VIEWER ────────────────────────────────────────────────────────────────────
+btnV.onclick=()=>{
+  if(mode){stopAll();return;}
+  const room=roomInput.value.trim().toUpperCase();
+  if(!room){status('Entre le code salle','err');return;}
+  loadPeer(()=>initView(room));
 };
 
-function initViewer(room) {
-  setStatus('Connexion...', 'wait');
-  mode = 'viewer';
-  btnView.classList.add('active');
-  btnProject.disabled = true;
+function initView(room){
+  mode='viewer'; btnV.classList.add('active'); btnP.disabled=true;
+  const myId='view-'+room+'-'+rand(4);
+  peer=new Peer(myId,{host:'0.peerjs.com',port:443,secure:true,config:{iceServers:ICE}});
 
-  const myId = 'view-' + room + '-' + randCode(4);
-  peer = new Peer(myId, {
-    host: PEERJS_HOST,
-    port: PEERJS_PORT,
-    secure: true,
-    config: { iceServers: ICE_SERVERS }
+  peer.on('open',id=>{
+    log('Viewer ID: '+id);
+    status('Connexion au projecteur...','wait');
+    // Ouvre DataChannel vers proj-ROOM (ça déclenche peer.on('connection') côté proj)
+    conn=peer.connect('proj-'+room,{reliable:true});
+    conn.on('open',()=>{ log('DC ouvert, attente appel vidéo...'); status('Connecté, attente vidéo...','wait'); });
+    conn.on('error',e=>{ log('DC err: '+e); status('Erreur DC','err'); });
+    conn.on('close',()=>{ status('Connexion perdue','err'); hideOverlay(); });
   });
 
-  peer.on('open', () => {
-    setStatus('Connexion au projecteur...', 'wait');
-
-    // DataChannel pour le contrôle
-    conn = peer.connect('proj-' + room, { reliable: true });
-    conn.on('open', () => {
-      setStatus('Connecté — en attente vidéo...', 'wait');
-      // Demande le flux vidéo
-      call = peer.call('proj-' + room, fakeStream());
-      call.on('stream', (remoteStream) => {
-        remoteVideo.srcObject = remoteStream;
-        showOverlay();
-        setStatus('Réception en cours', 'ok');
-      });
-      call.on('error', (e) => setStatus('Erreur vidéo: ' + e, 'err'));
+  // Le projecteur nous appelle avec son flux vidéo
+  peer.on('call',c=>{
+    log('Appel vidéo reçu du projecteur !');
+    call=c;
+    call.answer(); // Pas de flux à envoyer
+    call.on('stream',s=>{
+      log('Flux reçu ✓');
+      vid.srcObject=s;
+      vid.play().catch(()=>{});
+      showOverlay();
+      status('Affichage en cours ✓','ok');
     });
-    conn.on('close', () => { setStatus('Connexion fermée', 'err'); hideOverlay(); });
-    conn.on('error', (e) => setStatus('Erreur DC: ' + e, 'err'));
+    call.on('error',e=>{ log('call err: '+e); status('Erreur vidéo','err'); });
   });
 
-  peer.on('error', (e) => {
-    setStatus('Erreur: ' + (e.type || e.message), 'err');
+  peer.on('error',e=>{
+    const t=e.type||e.message;
+    status(t==='peer-unavailable'?'Projecteur introuvable — vérifie le code':'Erreur: '+t,'err');
+    log('Peer err: '+t);
   });
 }
 
-// PeerJS call() exige un stream côté caller — on crée un flux vide
-function fakeStream() {
-  const ctx = new AudioContext();
-  const dst = ctx.createMediaStreamDestination();
-  return dst.stream;
+// ── OVERLAY + CONTRÔLE ────────────────────────────────────────────────────────
+function showOverlay(){ overlay.classList.add('visible'); setupCtrl(); setTimeout(()=>$('hint').style.opacity='0',4000); }
+function hideOverlay(){ overlay.classList.remove('visible'); removeCtrl(); }
+
+$('close-viewer').onclick=()=>stopAll();
+$('toggle-ctrl').onclick=()=>{ ctrlOn=!ctrlOn; $('toggle-ctrl').textContent='Contrôle: '+(ctrlOn?'ON':'OFF'); };
+
+function send(d){ if(conn&&conn.open) conn.send(d); }
+
+let lt=0;
+function pos(e){
+  const r=vid.getBoundingClientRect();
+  const vw=vid.videoWidth||1920, vh=vid.videoHeight||1080;
+  const sc=Math.min(r.width/vw,r.height/vh);
+  const ox=(r.width-vw*sc)/2, oy=(r.height-vh*sc)/2;
+  return {x:Math.max(0,Math.min(1,(e.clientX-r.left-ox)/(vw*sc))),
+          y:Math.max(0,Math.min(1,(e.clientY-r.top-oy)/(vh*sc)))};
 }
 
-// ─── OVERLAY VIEWER ───────────────────────────────────────────────────────────
-function showOverlay() {
-  overlay.classList.add('visible');
-  setupViewerEvents();
-  setTimeout(()=>{ hint.style.opacity='0'; }, 3000);
+const eMove=e=>{if(!ctrlOn)return; const n=Date.now();if(n-lt<16)return;lt=n;const p=pos(e);send({type:'mousemove',x:p.x,y:p.y});};
+const eDown=e=>{if(!ctrlOn)return;const p=pos(e);send({type:'mousedown',x:p.x,y:p.y,b:e.button});};
+const eUp  =e=>{if(!ctrlOn)return;const p=pos(e);send({type:'mouseup',x:p.x,y:p.y,b:e.button});};
+const eWheel=e=>{if(!ctrlOn)return;e.preventDefault();send({type:'wheel',dx:e.deltaX,dy:e.deltaY});};
+const eKD  =e=>{if(!ctrlOn)return;if(e.key==='Escape'){stopAll();return;}e.preventDefault();send({type:'keydown',key:e.key,code:e.code,ctrl:e.ctrlKey,shift:e.shiftKey,alt:e.altKey,meta:e.metaKey});};
+const eKU  =e=>{if(!ctrlOn)return;send({type:'keyup',key:e.key,code:e.code});};
+
+function setupCtrl(){
+  vid.addEventListener('mousemove',eMove);
+  vid.addEventListener('mousedown',eDown);
+  vid.addEventListener('mouseup',eUp);
+  vid.addEventListener('wheel',eWheel,{passive:false});
+  vid.addEventListener('contextmenu',e=>e.preventDefault());
+  document.addEventListener('keydown',eKD);
+  document.addEventListener('keyup',eKU);
+}
+function removeCtrl(){
+  vid.removeEventListener('mousemove',eMove);
+  vid.removeEventListener('mousedown',eDown);
+  vid.removeEventListener('mouseup',eUp);
+  vid.removeEventListener('wheel',eWheel);
+  document.removeEventListener('keydown',eKD);
+  document.removeEventListener('keyup',eKU);
 }
 
-function hideOverlay() {
-  overlay.classList.remove('visible');
-  removeViewerEvents();
-}
-
-closeViewer.onclick = () => stopAll();
-
-toggleCtrl.onclick = () => {
-  controlEnabled = !controlEnabled;
-  toggleCtrl.textContent = 'Contrôle: ' + (controlEnabled ? 'ON' : 'OFF');
-  remoteVideo.style.cursor = controlEnabled ? 'none' : 'default';
-};
-
-// ─── ÉVÉNEMENTS CONTRÔLE (viewer → projecteur) ───────────────────────────────
-function send(data) {
-  if (conn && conn.open) conn.send(data);
-}
-
-let lastMoveTime = 0;
-
-function setupViewerEvents() {
-  remoteVideo.addEventListener('mousemove', onMouseMove);
-  remoteVideo.addEventListener('mousedown', onMouseDown);
-  remoteVideo.addEventListener('mouseup', onMouseUp);
-  remoteVideo.addEventListener('wheel', onWheel, { passive: false });
-  remoteVideo.addEventListener('contextmenu', e => e.preventDefault());
-  document.addEventListener('keydown', onKeyDown);
-  document.addEventListener('keyup', onKeyUp);
-}
-
-function removeViewerEvents() {
-  remoteVideo.removeEventListener('mousemove', onMouseMove);
-  remoteVideo.removeEventListener('mousedown', onMouseDown);
-  remoteVideo.removeEventListener('mouseup', onMouseUp);
-  remoteVideo.removeEventListener('wheel', onWheel);
-  document.removeEventListener('keydown', onKeyDown);
-  document.removeEventListener('keyup', onKeyUp);
-}
-
-function getRelativePos(e) {
-  const r = remoteVideo.getBoundingClientRect();
-  const vw = remoteVideo.videoWidth || 1920;
-  const vh = remoteVideo.videoHeight || 1080;
-  // L'élément video peut avoir des bandes noires (object-fit: contain)
-  const scale = Math.min(r.width/vw, r.height/vh);
-  const displayW = vw * scale, displayH = vh * scale;
-  const offX = (r.width - displayW) / 2;
-  const offY = (r.height - displayH) / 2;
-  const x = (e.clientX - r.left - offX) / displayW;
-  const y = (e.clientY - r.top - offY) / displayH;
-  return { x: Math.max(0, Math.min(1, x)), y: Math.max(0, Math.min(1, y)) };
-}
-
-function onMouseMove(e) {
-  if (!controlEnabled) return;
-  const now = Date.now();
-  if (now - lastMoveTime < 16) return; // ~60fps max
-  lastMoveTime = now;
-  const pos = getRelativePos(e);
-  send({ type: 'mousemove', x: pos.x, y: pos.y });
-}
-
-function onMouseDown(e) {
-  if (!controlEnabled) return;
-  const pos = getRelativePos(e);
-  send({ type: 'mousedown', x: pos.x, y: pos.y, button: e.button });
-}
-
-function onMouseUp(e) {
-  if (!controlEnabled) return;
-  const pos = getRelativePos(e);
-  send({ type: 'mouseup', x: pos.x, y: pos.y, button: e.button });
-}
-
-function onWheel(e) {
-  if (!controlEnabled) return;
-  e.preventDefault();
-  send({ type: 'wheel', dx: e.deltaX, dy: e.deltaY });
-}
-
-function onKeyDown(e) {
-  if (!controlEnabled) return;
-  if (e.key === 'Escape') { stopAll(); return; }
-  e.preventDefault();
-  send({ type: 'keydown', key: e.key, code: e.code, modifiers: {
-    ctrl: e.ctrlKey, shift: e.shiftKey, alt: e.altKey, meta: e.metaKey
-  }});
-}
-
-function onKeyUp(e) {
-  if (!controlEnabled) return;
-  send({ type: 'keyup', key: e.key, code: e.code });
-}
-
-// ─── TRAITEMENT DES ÉVÉNEMENTS (côté projecteur) ─────────────────────────────
-// Note: le contrôle à distance nécessite que la page soit exécutée sur un
-// serveur avec accès à l'API Robot (ex: Electron, extension Chrome, ou via
-// un serveur local Node.js). Dans un navigateur pur, on affiche les événements.
-
-function handleControlEvent(data) {
-  // Dans un contexte Electron / serveur local, on utiliserait robotjs ici.
-  // En mode navigateur pur, on dispatche les événements sur l'élément focalisé.
-  if (data.type === 'mousemove') {
-    showReceivedCursor(data.x, data.y);
+function handleCtrl(d){
+  if(!d||!d.type) return;
+  if(d.type==='mousemove'){
+    let c=document.getElementById('pc');
+    if(!c){c=document.createElement('div');c.id='pc';c.style.cssText='position:fixed;width:14px;height:14px;border-radius:50%;background:rgba(52,152,219,0.8);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);';document.body.appendChild(c);}
+    c.style.left=(d.x*100)+'vw'; c.style.top=(d.y*100)+'vh';
   }
-  // Les autres événements sont logués — pour un contrôle complet utilise
-  // la version Electron fournie séparément.
-  console.log('[Control]', data);
 }
 
-function showReceivedCursor(rx, ry) {
-  // Affiche un curseur fantôme sur le projecteur (feedback visuel)
-  const el = document.getElementById('proj-cursor') || createProjCursor();
-  el.style.left = (rx * window.innerWidth) + 'px';
-  el.style.top = (ry * window.innerHeight) + 'px';
+// ── STOP ──────────────────────────────────────────────────────────────────────
+function stopAll(){
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
+  try{if(call)call.close();}catch(e){}call=null;
+  try{if(conn)conn.close();}catch(e){}conn=null;
+  try{if(peer)peer.destroy();}catch(e){}peer=null;
+  mode=null;
+  btnP.classList.remove('active');btnV.classList.remove('active');
+  btnP.disabled=false;btnV.disabled=false;
+  hideOverlay(); vid.srcObject=null;
+  const c=document.getElementById('pc');if(c)c.remove();
+  status('Déconnecté'); log('');
 }
 
-function createProjCursor() {
-  const el = document.createElement('div');
-  el.id = 'proj-cursor';
-  el.style.cssText = `position:fixed;width:16px;height:16px;border-radius:50%;
-    background:rgba(52,152,219,0.7);pointer-events:none;z-index:9999;
-    transform:translate(-50%,-50%);transition:left 0.05s,top 0.05s;`;
-  document.body.appendChild(el);
-  return el;
-}
-
-// ─── STOP ─────────────────────────────────────────────────────────────────────
-function stopAll() {
-  if (localStream) { localStream.getTracks().forEach(t=>t.stop()); localStream=null; }
-  if (call) { try { call.close(); } catch(e){} call=null; }
-  if (conn) { try { conn.close(); } catch(e){} conn=null; }
-  if (peer) { try { peer.destroy(); } catch(e){} peer=null; }
-  mode = null;
-  btnProject.classList.remove('active');
-  btnView.classList.remove('active');
-  btnProject.disabled = false;
-  btnView.disabled = false;
-  hideOverlay();
-  remoteVideo.srcObject = null;
-  const pc = document.getElementById('proj-cursor');
-  if (pc) pc.remove();
-  setStatus('Déconnecté');
-}
-
-// Escape depuis overlay
-document.addEventListener('keydown', (e)=>{
-  if (e.key==='Escape' && mode==='viewer') stopAll();
-});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mode==='viewer')stopAll();});
 </script>
 </body>
 </html>
